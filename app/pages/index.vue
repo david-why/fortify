@@ -1,7 +1,13 @@
-<template>
-  <h1 class="text-3xl font-bold">
-    Welcome to <span class="text-primary">Fortify!</span>
-  </h1>
+<script setup lang="ts">
+definePageMeta({
+  layout: 'empty',
+})
+</script>
 
-  <SiegeMap />
+<template>
+  <div
+    class="max-h-screen aspect-4/3 m-auto"
+  >
+    <SiegeMap class="w-full max-w-full max-h-full" />
+  </div>
 </template>
