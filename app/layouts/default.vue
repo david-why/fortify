@@ -5,7 +5,7 @@ const route = useRoute()
 
 const navItems = computed<NavigationMenuItem[]>(() => [
   {
-    label: 'Keep',
+    label: 'Home',
     to: '/',
     active: route.path === '/',
   },
@@ -13,17 +13,17 @@ const navItems = computed<NavigationMenuItem[]>(() => [
 </script>
 
 <template>
-  <UContainer>
-    <UHeader class="mb-4">
-      <template #title>
-        <span class="text-primary">Fortify</span>
-      </template>
+  <UHeader class="mb-4">
+    <template #title>
+      <span class="text-primary">Fortify</span>
+    </template>
 
-      <UNavigationMenu :items="navItems" />
-    </UHeader>
+    <UNavigationMenu :items="navItems" />
+  </UHeader>
 
-    <UMain>
+  <UMain>
+    <UContainer>
       <slot />
-    </UMain>
-  </UContainer>
+    </UContainer>
+  </UMain>
 </template>

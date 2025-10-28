@@ -28,9 +28,9 @@ function onSectionClicked(
     | 'map'
     | 'catacombs'
 ) {
-  alert(name)
   switch (name) {
-    case 'keep':
+    case 'armory':
+      router.push('/armory')
       return
   }
 }
