@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const router = useRouter()
+
 const layers = computed(() => [
   { image: '/images/castle/0-sky.webp' },
   { image: '/images/castle/1-mountains.webp' },
@@ -15,12 +17,32 @@ const layers = computed(() => [
   { image: '/images/castle/12-lighting.webp' },
   { image: '/images/castle/logo.webp' },
 ])
+
+function onSectionClicked(
+  name:
+    | 'chambers'
+    | 'keep'
+    | 'great-hall'
+    | 'armory'
+    | 'market'
+    | 'map'
+    | 'catacombs'
+) {
+  alert(name)
+  switch (name) {
+    case 'keep':
+      return
+  }
+}
 </script>
 
 <template>
   <div class="relative">
-    <div class="absolute" v-for="layer in layers" :key="layer.image">
+    <div class="absolute inset-0" v-for="layer in layers" :key="layer.image">
       <img :src="layer.image" />
+    </div>
+    <div class="absolute inset-0">
+      <SiegeClickOverlay @click="onSectionClicked" />
     </div>
   </div>
 </template>
