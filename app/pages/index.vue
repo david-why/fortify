@@ -6,7 +6,7 @@ definePageMeta({
 
 <template>
   <div
-    class="max-h-screen aspect-4/3 m-auto"
+    class="h-screen max-h-screen aspect-4/3 m-auto"
   >
     <SiegeMap class="w-full max-w-full max-h-full" />
   </div>

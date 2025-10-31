@@ -7,8 +7,15 @@ const navItems = computed<NavigationMenuItem[]>(() => [
   {
     label: 'Home',
     to: '/',
+    icon: 'i-material-symbols-home-outline',
     active: route.path === '/',
   },
+  {
+    label: 'Armory',
+    to: '/armory',
+    icon: 'i-material-symbols-swords',
+    active: route.path === '/armory',
+  }
 ])
 </script>
 
@@ -19,6 +26,10 @@ const navItems = computed<NavigationMenuItem[]>(() => [
     </template>
 
     <UNavigationMenu :items="navItems" />
+
+    <template #body>
+      <UNavigationMenu :items="navItems" orientation="vertical" class="-mx-2.5" />
+    </template>
   </UHeader>
 
   <UMain>

@@ -2,7 +2,7 @@ import { getSessionCookie } from '~~/server/utils/user'
 import { load } from 'cheerio'
 
 export default defineEventHandler(async (event) => {
-  const userID = getRouterParam(event, 'id')
+  const userID = getRouterParam(event, 'user')!
 
   if (userID === 'me') {
     // fetch from armory
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     }
     const htmlText = await res.text()
 
-    const projects: UserProject[] = []
+    const projects: Project[] = []
 
     const $ = load(htmlText)
     for (const project of $('.projects-grid').find('article')) {
