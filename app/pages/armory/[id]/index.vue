@@ -27,6 +27,9 @@ watch(
   <blockquote class="border-l-2 border-gray-500 ps-4 whitespace-pre-wrap mb-4">
     {{ project.description }}
   </blockquote>
+  <div class="flex flex-wrap gap-2 mb-4">
+    <ProjectLinks :project="project" />
+  </div>
   <div v-if="project.screenshot">
     <img :src="project.screenshot" class="max-h-96" />
   </div>

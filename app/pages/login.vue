@@ -15,7 +15,7 @@ const state = reactive({
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   await $fetch('/api/login', { method: 'POST', body: event.data })
-  router.push('/keep')
+  router.push('/armory')
 }
 </script>
 

@@ -33,7 +33,26 @@ export default defineEventHandler(async (event) => {
           const url = this.attribs['href']
           return url === '#' ? null : url
         })
-      projects.push({ id, title, week, description, repo, demo })
+      const statusText = $(project)
+        .find('.project-status-display')
+        .text()
+        .trim()
+        .toLowerCase()
+      let status: ProjectStatus
+      if (statusText.includes('value: ')) {
+        status = 'finished'
+      } else if (statusText.includes('building')) {
+        status = 'building'
+      } else if (statusText.includes('submitted')) {
+        status = 'submitted'
+      } else if (statusText.includes('waiting for')) {
+        status = 'waiting_for_review'
+      } else if (statusText.includes('vote')) {
+        status = 'pending_voting'
+      } else {
+        status = 'building' // uhhh??
+      }
+      projects.push({ id, title, week, description, repo, demo, status })
     }
 
     return projects

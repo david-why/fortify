@@ -23,6 +23,7 @@ export default defineEventHandler(async (event) => {
     screenshot: scrapeData.screenshot,
     repo: apiData.repo_url || null,
     demo: apiData.demo_url || null,
+    status: apiData.status,
   } satisfies Project
 })
 

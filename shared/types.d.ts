@@ -1,8 +1,15 @@
+declare type ProjectStatus =
+  | 'building'
+  | 'submitted'
+  | 'pending_voting'
+  | 'waiting_for_review'
+  | 'finished'
+
 declare interface APIProject {
   id: number
   name: string
   description: string
-  status: string
+  status: ProjectStatus
   repo_url: string
   demo_url: string
   created_at: string
@@ -37,6 +44,7 @@ declare interface Project {
   repo: string | null
   demo: string | null
   screenshot: string | null
+  status: ProjectStatus
 }
 
 declare type UserProject = Omit<Project, 'screenshot'>
