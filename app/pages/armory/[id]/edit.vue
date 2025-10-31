@@ -2,13 +2,14 @@
 import type { FormSubmitEvent } from '@nuxt/ui'
 import { editProjectSchema, type EditProjectSchema } from '~~/shared/schemas'
 import { canEditProject } from '~~/shared/validation'
+import { FetchError } from 'ofetch'
 
 const route = useRoute()
 const router = useRouter()
 const loadingIndicator = useLoadingIndicator()
 const { id } = route.params as { id: string }
 
-const { data, error } = await useFetch<Project>(`/api/users/me/projects/${id}`)
+const { data, error } = await useFetch(`/api/projects/${id}`)
 if (error.value || !data.value || !canEditProject(data.value)) {
   throw navigateTo(`/armory/${id}`)
 }
@@ -23,14 +24,19 @@ const state = reactive<EditProjectSchema>({
 async function onSubmit(event: FormSubmitEvent<EditProjectSchema>) {
   try {
     loadingIndicator.start()
-    await $fetch(`/api/users/me/projects/${id}`, {
+    await $fetch(`/api/projects/${id}`, {
       method: 'PUT',
       body: event.data,
     })
     loadingIndicator.clear()
     router.push(`/armory/${id}`)
   } catch (e) {
-    alert(String(e))
+    loadingIndicator.clear()
+    if (e instanceof FetchError) {
+      alert(e.message)
+    } else {
+      alert(String(e))
+    }
   }
 }
 </script>

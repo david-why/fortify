@@ -2,13 +2,6 @@ import { getCsrfTokens } from '~~/server/utils/csrf'
 import { editProjectSchema } from '~~/shared/schemas'
 
 export default defineEventHandler(async (event) => {
-  const userID = getRouterParam(event, 'user')!
-  if (userID !== 'me') {
-    throw createError({
-      status: 403,
-      message: 'Cannot edit projects that you do not own',
-    })
-  }
   const projectID = parseInt(getRouterParam(event, 'project')!)
   const payload = await readValidatedBody(event, editProjectSchema.parseAsync)
 
@@ -40,7 +33,6 @@ export default defineEventHandler(async (event) => {
     body,
     redirect: 'manual',
   })
-  console.log(res)
   if (
     res.status !== 302 ||
     res.headers.get('Location') !==

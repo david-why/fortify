@@ -5,7 +5,7 @@ const route = useRoute()
 const router = useRouter()
 const { id } = route.params as { id: string }
 
-const data = await useFetch<Project>(`/api/users/me/projects/${id}`)
+const data = await useFetch(`/api/projects/${id}`)
 
 const project = computed(() => {
   return data.data.value!
