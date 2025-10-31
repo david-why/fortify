@@ -5,6 +5,7 @@ import { canEditProject } from '~~/shared/validation'
 
 const route = useRoute()
 const router = useRouter()
+const loadingIndicator = useLoadingIndicator()
 const { id } = route.params as { id: string }
 
 const { data, error } = await useFetch<Project>(`/api/users/me/projects/${id}`)
@@ -21,10 +22,12 @@ const state = reactive<EditProjectSchema>({
 
 async function onSubmit(event: FormSubmitEvent<EditProjectSchema>) {
   try {
+    loadingIndicator.start()
     await $fetch(`/api/users/me/projects/${id}`, {
       method: 'PUT',
       body: event.data,
     })
+    loadingIndicator.clear()
     router.push(`/armory/${id}`)
   } catch (e) {
     alert(String(e))
@@ -49,7 +52,11 @@ async function onSubmit(event: FormSubmitEvent<EditProjectSchema>) {
     </UFormField>
 
     <UFormField label="Description" name="description">
-      <UTextarea autocomplete="off" v-model="state.description" class="w-full md:w-1/2" />
+      <UTextarea
+        autocomplete="off"
+        v-model="state.description"
+        class="w-full md:w-1/2"
+      />
     </UFormField>
 
     <UFormField label="Repository URL (optional)" name="repo">

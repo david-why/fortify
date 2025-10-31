@@ -1,4 +1,3 @@
-import { load } from 'cheerio'
 import { getCsrfTokens } from '~~/server/utils/csrf'
 import { editProjectSchema } from '~~/shared/schemas'
 
