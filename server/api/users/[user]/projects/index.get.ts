@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     }
     const htmlText = await res.text()
 
-    const projects: Project[] = []
+    const projects: UserProject[] = []
 
     const $ = load(htmlText)
     for (const project of $('.projects-grid').find('article')) {

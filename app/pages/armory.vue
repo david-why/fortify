@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const router = useRouter()
 
-const data = await useFetch<Project[]>('/api/users/me/projects')
+const data = await useFetch<UserProject[]>('/api/users/me/projects')
 
 const projects = computed(() =>
   data.data.value?.toSorted((a, b) => a.week - b.week)

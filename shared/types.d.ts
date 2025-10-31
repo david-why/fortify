@@ -34,4 +34,7 @@ declare interface Project {
   title: string
   week: number
   description: string
+  screenshot: string | null
 }
+
+declare type UserProject = Omit<Project, 'screenshot'>

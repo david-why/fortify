@@ -15,6 +15,7 @@ watch(
     if (value === 'error') {
       router.push('/armory')
     }
+    console.log(data.data.value)
   },
   { immediate: true }
 )
@@ -22,7 +23,11 @@ watch(
 
 <template>
   <h1 class="text-3xl font-bold mb-4">{{ project.title }}</h1>
-  <blockquote class="border-l-2 border-gray-500 ps-4 whitespace-pre-wrap">
+  <p class="text-sm mb-4">Week {{ project.week }}</p>
+  <blockquote class="border-l-2 border-gray-500 ps-4 whitespace-pre-wrap mb-4">
     {{ project.description }}
   </blockquote>
+  <div v-if="project.screenshot">
+    <img :src="project.screenshot" class="max-h-96" />
+  </div>
 </template>
