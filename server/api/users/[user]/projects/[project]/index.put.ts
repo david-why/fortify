@@ -1,39 +1,16 @@
 import { load } from 'cheerio'
-import z from 'zod'
-import { ALLOWED_REPO_HOSTS } from '~~/shared/consts'
-
-// TODO: merge with code in frontend
-
-function checkRepoHost(u: string) {
-  try {
-    return ALLOWED_REPO_HOSTS.includes(new URL(u).hostname)
-  } catch {
-    return true
-  }
-}
-
-const schema = z.object({
-  title: z.string().min(1),
-  repo: z.union([
-    z.url().refine(checkRepoHost, {
-      error:
-        'Repo url must be a repository URL from a supported Git hosting service (GitHub, GitLab, Bitbucket, Codeberg, SourceForge, Azure DevOps, or Hack Club Git)',
-    }),
-    z.literal(''),
-  ]),
-  demo: z.union([z.url(), z.literal('')]),
-})
+import { editProjectSchema } from '~~/shared/schemas'
 
 export default defineEventHandler(async (event) => {
   const userID = getRouterParam(event, 'user')!
   if (userID !== 'me') {
     throw createError({
       status: 403,
-      message: 'Cannot edit projects that you do not own'
+      message: 'Cannot edit projects that you do not own',
     })
   }
   const projectID = parseInt(getRouterParam(event, 'project')!)
-  const payload = await readValidatedBody(event, schema.parseAsync)
+  const payload = await readValidatedBody(event, editProjectSchema.parseAsync)
 
   // get a csrf token
   const pageRes = await fetch(
@@ -65,7 +42,11 @@ export default defineEventHandler(async (event) => {
   body.append('project[description]', 'updated by fortify') // TODO
   body.append('project[repo_url]', payload.repo)
   body.append('project[demo_url]', payload.demo)
-  body.append('project[screenshot]', new Blob([]), '')
+  // body.append(
+  //   'project[screenshot]',
+  //   new Blob([], { type: 'application/octet-stream' }),
+  //   ''
+  // )
   body.append('project[hackatime_projects][]', '')
   const res = await fetch(`https://siege.hackclub.com/armory/${projectID}`, {
     method: 'POST',

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
-import z from 'zod'
-import { ALLOWED_REPO_HOSTS } from '~~/shared/consts'
+import { editProjectSchema, type EditProjectSchema } from '~~/shared/schemas'
 import { canEditProject } from '~~/shared/validation'
 
 const route = useRoute()
@@ -18,35 +17,13 @@ if (
   throw navigateTo(`/armory/${id}`)
 }
 
-function checkRepoHost(u: string) {
-  try {
-    return ALLOWED_REPO_HOSTS.includes(new URL(u).hostname)
-  } catch {
-    return true
-  }
-}
-
-const schema = z.object({
-  title: z.string().min(1),
-  repo: z.union([
-    z.url().refine(checkRepoHost, {
-      error:
-        'Repo url must be a repository URL from a supported Git hosting service (GitHub, GitLab, Bitbucket, Codeberg, SourceForge, Azure DevOps, or Hack Club Git)',
-    }),
-    z.literal(''),
-  ]),
-  demo: z.union([z.url(), z.literal('')]),
-})
-
-type Schema = z.infer<typeof schema>
-
-const state = reactive<Schema>({
+const state = reactive<EditProjectSchema>({
   title: data.value.title || '',
   repo: data.value.repo || '',
   demo: data.value.demo || '',
 })
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+async function onSubmit(event: FormSubmitEvent<EditProjectSchema>) {
   // console.log(event.data)
   const res = await $fetch(`/api/users/me/projects/${id}`, {
     method: 'PUT',
@@ -58,7 +35,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
 <template>
   <h1 class="text-3xl font-bold mb-4">Edit project</h1>
-  <UForm :schema="schema" :state="state" class="space-y-2" @submit="onSubmit">
+  <UForm
+    :schema="editProjectSchema"
+    :state="state"
+    class="space-y-2"
+    @submit="onSubmit"
+  >
     <UFormField label="Project name" name="name">
       <UInput
         autocomplete="off"

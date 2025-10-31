@@ -1,19 +1,14 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
-import * as z from 'zod'
+import { loginSchema, type LoginSchema } from '~~/shared/schemas'
 
 const router = useRouter()
-
-const schema = z.object({
-  cookie: z.string().min(1, 'A cookie is required'),
-})
-type Schema = z.infer<typeof schema>
 
 const state = reactive({
   cookie: '',
 })
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+async function onSubmit(event: FormSubmitEvent<LoginSchema>) {
   await $fetch('/api/login', { method: 'POST', body: event.data })
   router.push('/armory')
 }
@@ -30,7 +25,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       the value of the <code>_siege_session</code> cookie below to sign in.
     </p>
 
-    <UForm :schema="schema" :state="state" class="space-y-2" @submit="onSubmit">
+    <UForm
+      :schema="loginSchema"
+      :state="state"
+      class="space-y-2"
+      @submit="onSubmit"
+    >
       <UFormField label="Cookie" name="cookie">
         <UInput type="password" autocomplete="off" v-model="state.cookie" />
       </UFormField>
