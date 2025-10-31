@@ -1,3 +1,6 @@
-export function canEditProject(project: Pick<Project, 'status'>) {
-  return project.status === 'building' || project.status === 'submitted'
+export function canEditProject(project: Pick<Project, 'status' | 'is_self'>) {
+  return (
+    project.is_self &&
+    (project.status === 'building' || project.status === 'submitted')
+  )
 }

@@ -8,28 +8,27 @@ const router = useRouter()
 const { id } = route.params as { id: string }
 
 const { data, error } = await useFetch<Project>(`/api/users/me/projects/${id}`)
-if (
-  error.value ||
-  !data.value ||
-  !data.value.is_self ||
-  !canEditProject(data.value)
-) {
+if (error.value || !data.value || !canEditProject(data.value)) {
   throw navigateTo(`/armory/${id}`)
 }
 
 const state = reactive<EditProjectSchema>({
   title: data.value.title || '',
+  description: data.value.description || '',
   repo: data.value.repo || '',
   demo: data.value.demo || '',
 })
 
 async function onSubmit(event: FormSubmitEvent<EditProjectSchema>) {
-  // console.log(event.data)
-  const res = await $fetch(`/api/users/me/projects/${id}`, {
-    method: 'PUT',
-    body: event.data,
-  })
-  console.log(res)
+  try {
+    await $fetch(`/api/users/me/projects/${id}`, {
+      method: 'PUT',
+      body: event.data,
+    })
+    router.push(`/armory/${id}`)
+  } catch (e) {
+    alert(String(e))
+  }
 }
 </script>
 
@@ -47,6 +46,10 @@ async function onSubmit(event: FormSubmitEvent<EditProjectSchema>) {
         v-model="state.title"
         class="w-full md:w-1/2"
       />
+    </UFormField>
+
+    <UFormField label="Description" name="description">
+      <UTextarea autocomplete="off" v-model="state.description" class="w-full md:w-1/2" />
     </UFormField>
 
     <UFormField label="Repository URL (optional)" name="repo">

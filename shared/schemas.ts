@@ -17,6 +17,7 @@ function checkRepoHost(u: string) {
 
 export const editProjectSchema = z.object({
   title: z.string().min(1),
+  description: z.string().min(1),
   repo: z.union([
     z.url().refine(checkRepoHost, {
       error:

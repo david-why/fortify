@@ -1,4 +1,5 @@
 import { load } from 'cheerio'
+import { getCsrfTokens } from '~~/server/utils/csrf'
 import { editProjectSchema } from '~~/shared/schemas'
 
 export default defineEventHandler(async (event) => {
@@ -12,34 +13,17 @@ export default defineEventHandler(async (event) => {
   const projectID = parseInt(getRouterParam(event, 'project')!)
   const payload = await readValidatedBody(event, editProjectSchema.parseAsync)
 
-  // get a csrf token
-  const pageRes = await fetch(
-    `https://siege.hackclub.com/armory/${projectID}/edit`,
-    {
-      headers: {
-        Cookie: `_siege_session=${getSessionCookie(event)}`,
-      },
-      redirect: 'manual',
-    }
+  const { csrfToken, authenticityToken } = await getCsrfTokens(
+    event,
+    `https://siege.hackclub.com/armory/${projectID}/edit`
   )
-  if (pageRes.status !== 200) {
-    throw new Error('Failed to get project edit page')
-  }
-  const pageHtml = await pageRes.text()
-
-  const $ = load(pageHtml)
-  const csrfToken = $('meta[name="csrf-token"]').attr('content')
-  const authenticityToken = $('input[name="authenticity_token"]').attr('value')
-  if (!csrfToken || !authenticityToken) {
-    throw new Error('Failed to get CSRF tokens for editing project')
-  }
 
   const body = new FormData()
   body.append('_method', 'patch')
   body.append('authenticity_token', authenticityToken)
   body.append('remove_screenshot', 'false')
   body.append('project[name]', payload.title)
-  body.append('project[description]', 'updated by fortify') // TODO
+  body.append('project[description]', payload.description)
   body.append('project[repo_url]', payload.repo)
   body.append('project[demo_url]', payload.demo)
   // body.append(
