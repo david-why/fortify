@@ -25,8 +25,20 @@ watch(
 <template>
   <h1 class="text-3xl font-bold mb-4">{{ project.title }}</h1>
   <p class="text-sm mb-4">
-    Week {{ project.week }}, <ProjectStatus :project="project" />
+    Week {{ project.week }}, {{ project.hours }} hours,
+    <ProjectStatus :project="project" />
   </p>
+  <div
+    class="flex flex-wrap gap-2 mb-4"
+    v-if="project.hackatime_projects.length"
+  >
+    <UBadge
+      color="primary"
+      variant="subtle"
+      v-for="item in project.hackatime_projects"
+      ><UIcon name="i-material-symbols-timer" /> {{ item }}</UBadge
+    >
+  </div>
   <blockquote class="border-l-2 border-gray-400 ps-4 whitespace-pre-wrap mb-4">
     {{ project.description }}
   </blockquote>

@@ -48,6 +48,10 @@ declare interface Project {
   value: number // 0 when status !== 'finished'
   hours: number
   is_self: boolean
+  hackatime_projects: string[]
 }
 
-declare type UserProject = Omit<Project, 'screenshot' | 'hours' | 'is_self'>
+declare type UserProject = Omit<
+  Project,
+  'screenshot' | 'hours' | 'is_self' | 'hackatime_projects'
+>

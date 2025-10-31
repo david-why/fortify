@@ -27,6 +27,7 @@ export default defineEventHandler(async (event) => {
     value: parseFloat(apiData.coin_value),
     hours: apiData.hours,
     is_self: scrapeData.is_self,
+    hackatime_projects: scrapeData.hackatime_projects,
   } satisfies Project
 })
 
@@ -50,7 +51,7 @@ async function fetchDataFromAPI(projectID: number) {
 async function fetchDataFromScraping(event: H3Event, projectID: number) {
   const cookie = getSessionCookie(event, false)
   if (!cookie) {
-    return { screenshot: null, is_self: false }
+    return { screenshot: null, is_self: false, hackatime_projects: [] }
   }
 
   const res = await fetch(`https://siege.hackclub.com/armory/${projectID}`, {
@@ -72,9 +73,15 @@ async function fetchDataFromScraping(event: H3Event, projectID: number) {
     .toArray()
     .filter((i) => i)
   const isSelf = !!$('.submit-button').length
+  const hackatimeProjects = $('.project-tag span')
+    .map(function () {
+      return $(this).text()
+    })
+    .toArray()
 
   return {
     screenshot: screenshotImgs[0] || null,
     is_self: isSelf,
+    hackatime_projects: hackatimeProjects,
   }
 }

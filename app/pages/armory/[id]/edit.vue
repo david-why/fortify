@@ -13,12 +13,19 @@ const { data, error } = await useFetch(`/api/projects/${id}`)
 if (error.value || !data.value || !canEditProject(data.value)) {
   throw navigateTo(`/armory/${id}`)
 }
+const { data: hackatimeData, error: hackatimeError } = await useFetch(
+  `/api/projects/${id}/hackatime-projects`
+)
+if (hackatimeError.value || !hackatimeData.value) {
+  throw navigateTo(`/armory/${id}`)
+}
 
 const state = reactive<EditProjectSchema>({
   title: data.value.title || '',
   description: data.value.description || '',
   repo: data.value.repo || '',
   demo: data.value.demo || '',
+  hackatime_projects: data.value.hackatime_projects,
 })
 
 async function onSubmit(event: FormSubmitEvent<EditProjectSchema>) {
@@ -71,6 +78,16 @@ async function onSubmit(event: FormSubmitEvent<EditProjectSchema>) {
 
     <UFormField label="Demo URL (optional)" name="demo">
       <UInput autocomplete="off" v-model="state.demo" class="w-full md:w-1/2" />
+    </UFormField>
+
+    <UFormField
+      label="Hackatime Projects (optional, but recommended)"
+      name="hackatime_projects"
+    >
+      <UCheckboxGroup
+        v-model="state.hackatime_projects"
+        :items="hackatimeData"
+      />
     </UFormField>
 
     <UButton type="submit">Edit</UButton>

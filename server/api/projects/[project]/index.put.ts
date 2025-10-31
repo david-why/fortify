@@ -24,6 +24,9 @@ export default defineEventHandler(async (event) => {
   //   ''
   // )
   body.append('project[hackatime_projects][]', '')
+  for (const project of payload.hackatime_projects) {
+    body.append('project[hackatime_projects][]', project)
+  }
   const res = await fetch(`https://siege.hackclub.com/armory/${projectID}`, {
     method: 'POST',
     headers: {

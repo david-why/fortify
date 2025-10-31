@@ -26,6 +26,7 @@ export const editProjectSchema = z.object({
     z.literal(''),
   ]),
   demo: z.union([z.url(), z.literal('')]),
+  hackatime_projects: z.array(z.string()),
 })
 
 export type EditProjectSchema = z.infer<typeof editProjectSchema>
