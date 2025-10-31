@@ -15,7 +15,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <h1 class="text-3xl font-bold mb-4">Armory</h1>
+  <h1 class="text-3xl font-bold mb-4">Your projects</h1>
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 align-stretch">
     <ULink
       :to="`/armory/${project.id}`"
@@ -30,9 +30,11 @@ onMounted(() => {
 
         <p class="whitespace-pre-wrap mb-4">{{ project.description }}</p>
 
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-2 mb-4">
           <ProjectLinks :project="project" />
         </div>
+
+        <div class="text-sm"><ProjectStatus :project="project" /></div>
       </UCard>
     </ULink>
   </div>

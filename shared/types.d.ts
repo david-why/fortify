@@ -45,6 +45,9 @@ declare interface Project {
   demo: string | null
   screenshot: string | null
   status: ProjectStatus
+  value: number // 0 when status !== 'finished'
+  hours: number
+  is_self: boolean
 }
 
-declare type UserProject = Omit<Project, 'screenshot'>
+declare type UserProject = Omit<Project, 'screenshot' | 'hours' | 'is_self'>

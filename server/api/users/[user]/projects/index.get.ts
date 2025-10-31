@@ -34,13 +34,16 @@ export default defineEventHandler(async (event) => {
           return url === '#' ? null : url
         })
       const statusText = $(project)
-        .find('.project-status-display')
+        .find('.project-status-indicator')
         .text()
         .trim()
         .toLowerCase()
       let status: ProjectStatus
+      let value: number = 0.0
       if (statusText.includes('value: ')) {
         status = 'finished'
+        const parts = statusText.split(': ')
+        value = parseFloat(parts[parts.length - 1])
       } else if (statusText.includes('building')) {
         status = 'building'
       } else if (statusText.includes('submitted')) {
@@ -52,7 +55,7 @@ export default defineEventHandler(async (event) => {
       } else {
         status = 'building' // uhhh??
       }
-      projects.push({ id, title, week, description, repo, demo, status })
+      projects.push({ id, title, week, description, repo, demo, status, value })
     }
 
     return projects

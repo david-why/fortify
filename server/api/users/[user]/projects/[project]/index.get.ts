@@ -24,6 +24,9 @@ export default defineEventHandler(async (event) => {
     repo: apiData.repo_url || null,
     demo: apiData.demo_url || null,
     status: apiData.status,
+    value: parseFloat(apiData.coin_value),
+    hours: apiData.hours,
+    is_self: scrapeData.is_self,
   } satisfies Project
 })
 
@@ -47,7 +50,7 @@ async function fetchDataFromAPI(projectID: number) {
 async function fetchDataFromScraping(event: H3Event, projectID: number) {
   const cookie = getSessionCookie(event, false)
   if (!cookie) {
-    return { screenshot: null }
+    return { screenshot: null, is_self: false }
   }
 
   const res = await fetch(`https://siege.hackclub.com/armory/${projectID}`, {
@@ -68,8 +71,10 @@ async function fetchDataFromScraping(event: H3Event, projectID: number) {
     })
     .toArray()
     .filter((i) => i)
+  const isSelf = !!$('.submit-button').length
 
   return {
     screenshot: screenshotImgs[0] || null,
+    is_self: isSelf,
   }
 }

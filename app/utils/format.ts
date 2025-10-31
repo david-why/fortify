@@ -14,3 +14,20 @@ export function getIconLink(url: string) {
     return 'i-material-symbols-open-in-new'
   }
 }
+
+export function formatStatus(project: Pick<Project, 'status' | 'value'>) {
+  switch (project.status) {
+    case 'building':
+      return 'Building'
+    case 'pending_voting':
+      return 'Pending voting'
+    case 'waiting_for_review':
+      return 'Waiting for finalization'
+    case 'submitted':
+      return 'Submitted for review'
+    case 'finished':
+      return `Value: ${project.value}`
+    default:
+      return 'Unknown'
+  }
+}
