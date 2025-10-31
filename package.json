@@ -10,6 +10,8 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@iconify-json/material-symbols": "^1.2.44",
+    "@iconify-json/mdi": "^1.2.3",
     "@nuxt/eslint": "1.9.0",
     "@nuxt/ui": "^4.1.0",
     "cheerio": "^1.1.2",

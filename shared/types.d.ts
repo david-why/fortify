@@ -34,6 +34,8 @@ declare interface Project {
   title: string
   week: number
   description: string
+  repo: string | null
+  demo: string | null
   screenshot: string | null
 }
 

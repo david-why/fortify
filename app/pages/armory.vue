@@ -26,8 +26,40 @@ onMounted(() => {
         <template #header>
           <h2 class="text-xl font-semibold">{{ project.title }}</h2>
           <h3>Week {{ project.week }}</h3>
-          <p class="whitespace-pre-wrap">{{ project.description }}</p>
         </template>
+
+        <p class="whitespace-pre-wrap mb-4">{{ project.description }}</p>
+
+        <div class="flex flex-wrap gap-2">
+          <UButton
+            :href="project.repo || undefined"
+            target="_blank"
+            color="neutral"
+            variant="subtle"
+            :disabled="!project.repo"
+            @click.stop
+          >
+            <span v-if="project.repo" class="flex items-center gap-1">
+              <UIcon :name="getIconLink(project.repo)"></UIcon>
+              {{ getDomainName(project.repo) }}
+            </span>
+            <span v-else>No repo link</span>
+          </UButton>
+          <UButton
+            :href="project.demo || undefined"
+            target="_blank"
+            color="neutral"
+            variant="subtle"
+            :disabled="!project.demo"
+            @click.stop
+          >
+            <span v-if="project.demo" class="flex items-center gap-1">
+              <UIcon :name="getIconLink(project.demo)"></UIcon>
+              {{ getDomainName(project.demo) }}
+            </span>
+            <span v-else>No demo link</span>
+          </UButton>
+        </div>
       </UCard>
     </ULink>
   </div>

@@ -21,6 +21,8 @@ export default defineEventHandler(async (event) => {
     week: parseInt(apiData.week_badge_text.split(' ')[1]),
     description: apiData.description,
     screenshot: scrapeData.screenshot,
+    repo: apiData.repo_url || null,
+    demo: apiData.demo_url || null,
   } satisfies Project
 })
 

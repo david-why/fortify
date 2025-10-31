@@ -27,7 +27,13 @@ export default defineEventHandler(async (event) => {
         $(project).find('.project-badge').text().trim().split(' ')[1]
       )
       const description = $(project).find('.project-description').text().trim()
-      projects.push({ id, title, week, description })
+      const [repo, demo] = $(project)
+        .find('.project-links a')
+        .map(function () {
+          const url = this.attribs['href']
+          return url === '#' ? null : url
+        })
+      projects.push({ id, title, week, description, repo, demo })
     }
 
     return projects
