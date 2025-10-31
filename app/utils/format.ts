@@ -20,7 +20,7 @@ export function formatStatus(project: Pick<Project, 'status' | 'value'>) {
     case 'building':
       return 'Building'
     case 'pending_voting':
-      return 'Pending voting'
+      return 'Waiting for votes'
     case 'waiting_for_review':
       return 'Waiting for finalization'
     case 'submitted':

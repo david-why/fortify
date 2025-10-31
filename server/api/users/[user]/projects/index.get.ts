@@ -48,10 +48,10 @@ export default defineEventHandler(async (event) => {
         status = 'building'
       } else if (statusText.includes('submitted')) {
         status = 'submitted'
-      } else if (statusText.includes('waiting for')) {
-        status = 'waiting_for_review'
       } else if (statusText.includes('vote')) {
         status = 'pending_voting'
+      } else if (statusText.includes('waiting for')) {
+        status = 'waiting_for_review'
       } else {
         status = 'building' // uhhh??
       }
