@@ -25,7 +25,7 @@ const canCreate = computed(() => data.value?.canCreate)
       v-for="project in projects"
       :key="project.title"
     >
-      <UCard class="h-full">
+      <UCard class="h-full" variant="subtle">
         <template #header>
           <h2 class="text-xl font-semibold">{{ project.title }}</h2>
           <h3>Week {{ project.week }}</h3>
