@@ -26,14 +26,24 @@ const state = reactive<EditProjectSchema>({
   repo: data.value.repo || '',
   demo: data.value.demo || '',
   hackatime_projects: data.value.hackatime_projects,
+  screenshot: null,
 })
+
+const screenshotFile = ref<File | null>(null)
 
 async function onSubmit(event: FormSubmitEvent<EditProjectSchema>) {
   try {
     loadingIndicator.start()
+    const data: EditProjectSchema = {
+      ...event.data,
+    }
+    if (screenshotFile.value) {
+      data.screenshot = await blobToBase64URL(screenshotFile.value)
+      console.log(data.screenshot)
+    }
     await $fetch(`/api/projects/${id}`, {
       method: 'PUT',
-      body: event.data,
+      body: data,
     })
     loadingIndicator.clear()
     router.push(`/armory/${id}`)
@@ -73,11 +83,20 @@ async function onSubmit(event: FormSubmitEvent<EditProjectSchema>) {
     </UFormField>
 
     <UFormField label="Repository URL (optional)" name="repo">
-      <UInput autocomplete="off" v-model="state.repo" class="w-full md:w-1/2" />
+      <UInput v-model="state.repo" class="w-full md:w-1/2" />
     </UFormField>
 
     <UFormField label="Demo URL (optional)" name="demo">
-      <UInput autocomplete="off" v-model="state.demo" class="w-full md:w-1/2" />
+      <UInput v-model="state.demo" class="w-full md:w-1/2" />
+    </UFormField>
+
+    <UFormField label="Screenshot" name="screenshot">
+      <UFileUpload
+        v-model="screenshotFile"
+        label="Upload a screenshot"
+        accept="image/*"
+        class="w-full md:w-1/2"
+      />
     </UFormField>
 
     <UFormField

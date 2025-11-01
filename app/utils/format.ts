@@ -15,19 +15,14 @@ export function getIconLink(url: string) {
   }
 }
 
-export function formatStatus(project: Pick<Project, 'status' | 'value'>) {
-  switch (project.status) {
-    case 'building':
-      return 'Building'
-    case 'pending_voting':
-      return 'Waiting for votes'
-    case 'waiting_for_review':
-      return 'Waiting for finalization'
-    case 'submitted':
-      return 'Submitted for review'
-    case 'finished':
-      return `Value: ${project.value}`
-    default:
-      return 'Unknown'
-  }
+// https://stackoverflow.com/a/61226119/13951118
+export function blobToBase64URL(blob: Blob) {
+  const reader = new FileReader()
+  reader.readAsDataURL(blob)
+  return new Promise<string>((resolve) => {
+    reader.onloadend = () => {
+      const dataURL = reader.result as string
+      resolve(dataURL)
+    }
+  })
 }

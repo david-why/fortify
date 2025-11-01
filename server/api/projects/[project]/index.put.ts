@@ -21,11 +21,17 @@ export default defineEventHandler(async (event) => {
   body.append('project[description]', payload.description)
   body.append('project[repo_url]', payload.repo)
   body.append('project[demo_url]', payload.demo)
-  // body.append(
-  //   'project[screenshot]',
-  //   new Blob([], { type: 'application/octet-stream' }),
-  //   ''
-  // )
+  if (payload.screenshot) {
+    console.log(payload.screenshot.substring(0, 100))
+    if (!payload.screenshot.startsWith('data:')) {
+      throw createError({
+        status: 400,
+        message: 'Please specify a data: URL for screenshot',
+      })
+    }
+    const blob = await fetch(payload.screenshot).then((r) => r.blob())
+    body.append('project[screenshot]', blob, 'image')
+  }
   body.append('project[hackatime_projects][]', '')
   for (const project of payload.hackatime_projects) {
     body.append('project[hackatime_projects][]', project)

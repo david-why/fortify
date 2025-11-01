@@ -30,8 +30,9 @@ function onSectionClicked(
 ) {
   switch (name) {
     case 'armory':
-      router.push('/armory')
-      return
+      return router.push('/armory')
+    default:
+      return router.push('/dev')
   }
 }
 </script>

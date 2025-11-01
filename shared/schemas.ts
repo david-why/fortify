@@ -27,6 +27,11 @@ export const editProjectSchema = z.object({
   ]),
   demo: z.union([z.url(), z.literal('')]),
   hackatime_projects: z.array(z.string()),
+  screenshot: z.nullable(
+    z
+      .string()
+      .refine((s) => s.startsWith('data:image/'), 'Screenshot must be an image')
+  ),
 })
 
 export type EditProjectSchema = z.infer<typeof editProjectSchema>

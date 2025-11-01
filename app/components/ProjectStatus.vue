@@ -6,7 +6,7 @@ defineProps<{
 
 <template>
   <span v-if="project.status === 'building'">Building</span>
-  <span v-else-if="project.status === 'pending_voting'">Pending voting</span>
+  <span v-else-if="project.status === 'pending_voting'">Waiting for votes</span>
   <span v-else-if="project.status === 'waiting_for_review'"
     >Waiting for finalization</span
   >
