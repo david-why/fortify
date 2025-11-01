@@ -16,7 +16,7 @@ export async function getCsrfTokens(event: H3Event, url: string) {
   const $ = load(pageHtml)
   const csrfToken = $('meta[name="csrf-token"]').attr('content')
   const authenticityToken = $('input[name="authenticity_token"]').attr('value')
-  if (!csrfToken || !authenticityToken) {
+  if (!csrfToken) {
     throw new Error('Failed to get CSRF tokens')
   }
 

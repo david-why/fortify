@@ -30,3 +30,9 @@ export const editProjectSchema = z.object({
 })
 
 export type EditProjectSchema = z.infer<typeof editProjectSchema>
+
+export const submitProjectSchema = z.object({
+  is_update: z.boolean(),
+})
+
+export type SubmitProjectSchema = z.infer<typeof submitProjectSchema>

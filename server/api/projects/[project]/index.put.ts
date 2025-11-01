@@ -9,6 +9,9 @@ export default defineEventHandler(async (event) => {
     event,
     `https://siege.hackclub.com/armory/${projectID}/edit`
   )
+  if (!authenticityToken) {
+    throw new Error('Failed to get CSRF token')
+  }
 
   const body = new FormData()
   body.append('_method', 'patch')
