@@ -41,3 +41,13 @@ export const submitProjectSchema = z.object({
 })
 
 export type SubmitProjectSchema = z.infer<typeof submitProjectSchema>
+
+export const updateStarsSchema = z.object({
+  stars: z.int().min(1).max(5),
+})
+
+export type UpdateStarsSchema = z.infer<typeof updateStarsSchema>
+
+export const submitBallotSchema = z.object({
+  reasoning: z.string(),
+})

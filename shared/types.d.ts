@@ -55,3 +55,10 @@ declare type UserProject = Omit<
   Project,
   'screenshot' | 'hours' | 'is_self' | 'hackatime_projects'
 >
+
+declare interface Ballot {
+  id: number
+  votingState: string
+  meepleMessage: string
+  allowRevote: boolean
+}

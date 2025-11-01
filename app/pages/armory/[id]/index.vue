@@ -3,14 +3,20 @@ import { FetchError } from 'ofetch'
 import { canEditProject } from '~~/shared/validation'
 
 const route = useRoute()
-const router = useRouter()
 const loadingIndicator = useLoadingIndicator()
 const { id } = route.params as { id: string }
 
-const data = await useFetch(`/api/projects/${id}`)
+const {
+  error,
+  data,
+  refresh: refreshData,
+} = await useFetch(`/api/projects/${id}`)
+if (error.value || !data.value) {
+  throw navigateTo('/armory')
+}
 
 const project = computed(() => {
-  return data.data.value!
+  return data.value!
 })
 
 const submitCounter = ref(0)
@@ -23,27 +29,23 @@ async function submitProject(isUpdate: boolean) {
       body: { is_update: isUpdate },
     })
   } catch (e) {
+    loadingIndicator.finish()
     console.error(e)
     if (e instanceof FetchError) {
       alert(e.message)
     } else {
       alert(String(e))
     }
+    return
   } finally {
-    loadingIndicator.finish()
     submitCounter.value++
   }
+  try {
+    await refreshData()
+  } finally {
+    loadingIndicator.finish()
+  }
 }
-
-watch(
-  data.status,
-  (value) => {
-    if (value === 'error') {
-      router.push('/armory')
-    }
-  },
-  { immediate: true }
-)
 </script>
 
 <template>

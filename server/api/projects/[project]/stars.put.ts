@@ -1,36 +1,36 @@
-import { submitProjectSchema } from '~~/shared/schemas'
+import { updateStarsSchema } from '~~/shared/schemas'
 
 export default defineEventHandler(async (event) => {
   const projectID = getRouterParam(event, 'project')!
-  const { is_update } = await readValidatedBody(
-    event,
-    submitProjectSchema.parseAsync
-  )
+  const { stars } = await readValidatedBody(event, updateStarsSchema.parseAsync)
 
   const { csrfToken } = await getCsrfTokens(
     event,
-    `https://siege.hackclub.com/armory/${projectID}`
+    `https://siege.hackclub.com/great-hall`
   )
 
   const res = await fetch(
-    `https://siege.hackclub.com/armory/${projectID}/submit`,
+    `https://siege.hackclub.com/votes/${projectID}/update_stars`,
     {
-      method: 'POST',
-      body: JSON.stringify({ is_update }),
+      method: 'PATCH',
       headers: {
         Cookie: `_siege_session=${getSessionCookie(event)}`,
         'Content-Type': 'application/json',
         Accept: 'application/json',
         'x-csrf-token': csrfToken,
       },
+      body: JSON.stringify({ star_count: stars }),
       redirect: 'manual',
     }
-  )
-  if (!res.ok) {
+  ).then((r) => r.json())
+
+  if (!res.success) {
     throw createError({
-      status: res.status,
-      message: 'Failed to submit project',
+      status: 500,
+      message: 'Siege API returned error',
+      data: res,
     })
   }
+
   setResponseStatus(event, 204)
 })
