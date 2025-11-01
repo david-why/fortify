@@ -31,15 +31,12 @@ const state = reactive<EditProjectSchema>({
 
 const screenshotFile = ref<File | null>(null)
 
-async function onSubmit(event: FormSubmitEvent<EditProjectSchema>) {
+async function onSubmit(eventData: EditProjectSchema) {
   try {
     loadingIndicator.start()
-    const data: EditProjectSchema = {
-      ...event.data,
-    }
+    const data: EditProjectSchema = { ...eventData }
     if (screenshotFile.value) {
       data.screenshot = await blobToBase64URL(screenshotFile.value)
-      console.log(data.screenshot)
     }
     await $fetch(`/api/projects/${id}`, {
       method: 'PUT',
@@ -60,55 +57,10 @@ async function onSubmit(event: FormSubmitEvent<EditProjectSchema>) {
 
 <template>
   <h1 class="text-3xl font-bold mb-4">Edit project</h1>
-  <UForm
-    :schema="editProjectSchema"
-    :state="state"
-    class="space-y-2"
+
+  <ProjectEditForm
+    :project="data"
+    :hackatime-path="`/api/projects/${id}/hackatime-projects`"
     @submit="onSubmit"
-  >
-    <UFormField label="Project name" name="name">
-      <UInput
-        autocomplete="off"
-        v-model="state.title"
-        class="w-full md:w-1/2"
-      />
-    </UFormField>
-
-    <UFormField label="Description" name="description">
-      <UTextarea
-        autocomplete="off"
-        v-model="state.description"
-        class="w-full md:w-1/2"
-      />
-    </UFormField>
-
-    <UFormField label="Repository URL (optional)" name="repo">
-      <UInput v-model="state.repo" class="w-full md:w-1/2" />
-    </UFormField>
-
-    <UFormField label="Demo URL (optional)" name="demo">
-      <UInput v-model="state.demo" class="w-full md:w-1/2" />
-    </UFormField>
-
-    <UFormField label="Screenshot" name="screenshot">
-      <UFileUpload
-        v-model="screenshotFile"
-        label="Upload a screenshot"
-        accept="image/*"
-        class="w-full md:w-1/2"
-      />
-    </UFormField>
-
-    <UFormField
-      label="Hackatime Projects (optional, but recommended)"
-      name="hackatime_projects"
-    >
-      <UCheckboxGroup
-        v-model="state.hackatime_projects"
-        :items="hackatimeData"
-      />
-    </UFormField>
-
-    <UButton type="submit">Edit</UButton>
-  </UForm>
+  />
 </template>
