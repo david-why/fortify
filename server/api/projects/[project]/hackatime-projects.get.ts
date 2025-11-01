@@ -1,16 +1,18 @@
 import { load } from 'cheerio'
 
 export default defineEventHandler(async (event) => {
-  const projectID = parseInt(getRouterParam(event, 'project')!)
+  const projectID = getRouterParam(event, 'project')!
 
-  const res = await fetch(
-    `https://siege.hackclub.com/armory/${projectID}/edit`,
-    {
-      headers: {
-        Cookie: `_siege_session=${getSessionCookie(event)}`,
-      },
-    }
-  )
+  const url =
+    projectID === 'new'
+      ? 'https://siege.hackclub.com/armory/new'
+      : `https://siege.hackclub.com/armory/${projectID}/edit`
+
+  const res = await fetch(url, {
+    headers: {
+      Cookie: `_siege_session=${getSessionCookie(event)}`,
+    },
+  })
   if (res.status !== 200) {
     throw new Error('Failed to fetch armory project')
   }

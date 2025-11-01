@@ -1,21 +1,21 @@
 <script setup lang="ts">
-const router = useRouter()
-
-const data = await useFetch('/api/users/me/projects')
+const { data, error } = await useFetch('/api/users/me/projects')
+if (error.value) {
+  console.error(error.value, error.value.message)
+  throw navigateTo('/')
+}
 
 const projects = computed(() =>
-  data.data.value?.toSorted((a, b) => a.week - b.week)
+  data.value?.projects.toSorted((a, b) => a.week - b.week)
 )
-
-onMounted(() => {
-  if (data.status.value === 'error') {
-    return router.push('/login')
-  }
-})
+const canCreate = computed(() => data.value?.canCreate)
 </script>
 
 <template>
   <h1 class="text-3xl font-bold mb-4">Your projects</h1>
+  <div class="mb-4" v-if="canCreate">
+    <UButton href="/armory/new" variant="subtle">Create project</UButton>
+  </div>
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 align-stretch">
     <ULink
       :to="`/armory/${project.id}`"

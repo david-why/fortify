@@ -4,7 +4,6 @@ import { canEditProject } from '~~/shared/validation'
 import { FetchError } from 'ofetch'
 
 const route = useRoute()
-const router = useRouter()
 const loadingIndicator = useLoadingIndicator()
 const { id } = route.params as { id: string }
 
@@ -21,7 +20,8 @@ async function onSubmit(data: EditProjectSchema) {
       body: data,
     })
     loadingIndicator.clear()
-    router.push(`/armory/${id}`)
+    await navigateTo(`/armory/${id}`)
+    return
   } catch (e) {
     loadingIndicator.clear()
     if (e instanceof FetchError) {

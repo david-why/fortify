@@ -1,20 +1,17 @@
-import { getCsrfTokens } from '~~/server/utils/csrf'
 import { editProjectSchema } from '~~/shared/schemas'
 
 export default defineEventHandler(async (event) => {
-  const projectID = parseInt(getRouterParam(event, 'project')!)
   const payload = await readValidatedBody(event, editProjectSchema.parseAsync)
 
   const { csrfToken, authenticityToken } = await getCsrfTokens(
     event,
-    `https://siege.hackclub.com/armory/${projectID}/edit`
+    'https://siege.hackclub.com/armory/new'
   )
   if (!authenticityToken) {
     throw new Error('Failed to get CSRF token')
   }
 
   const body = new FormData()
-  body.append('_method', 'patch')
   body.append('authenticity_token', authenticityToken)
   body.append('remove_screenshot', 'false')
   body.append('project[name]', payload.title)
@@ -29,7 +26,7 @@ export default defineEventHandler(async (event) => {
   for (const project of payload.hackatime_projects) {
     body.append('project[hackatime_projects][]', project)
   }
-  const res = await fetch(`https://siege.hackclub.com/armory/${projectID}`, {
+  const res = await fetch('https://siege.hackclub.com/armory', {
     method: 'POST',
     headers: {
       Cookie: `_siege_session=${getSessionCookie(event)}`,
@@ -38,13 +35,14 @@ export default defineEventHandler(async (event) => {
     body,
     redirect: 'manual',
   })
+  const location = res.headers.get('Location')
   if (
     res.status !== 302 ||
-    res.headers.get('Location') !==
-      `https://siege.hackclub.com/armory/${projectID}`
+    !location?.startsWith(`https://siege.hackclub.com/armory/`)
   ) {
-    throw new Error('Failed to edit project')
+    throw new Error('Failed to create project')
   }
 
-  setResponseStatus(event, 204)
+  const parts = location.split('/').filter(s => s)
+  return { id: parseInt(parts[parts.length - 1]) }
 })

@@ -3,10 +3,16 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 import { editProjectSchema, type EditProjectSchema } from '~~/shared/schemas'
 import { FetchError } from 'ofetch'
 
-const { project, hackatimePath } = defineProps<{
-  project?: Project
-  hackatimePath: string
-}>()
+const { project, hackatimePath, submitLabel } = withDefaults(
+  defineProps<{
+    project?: Project
+    hackatimePath: string
+    submitLabel?: string
+  }>(),
+  {
+    submitLabel: 'Edit',
+  }
+)
 
 const emit = defineEmits<{
   submit: [data: EditProjectSchema]
@@ -95,6 +101,6 @@ async function onSubmit(event: FormSubmitEvent<EditProjectSchema>) {
       />
     </UFormField>
 
-    <UButton type="submit">Edit</UButton>
+    <UButton type="submit">{{ submitLabel }}</UButton>
   </UForm>
 </template>

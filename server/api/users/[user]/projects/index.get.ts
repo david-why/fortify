@@ -58,7 +58,9 @@ export default defineEventHandler(async (event) => {
       projects.push({ id, title, week, description, repo, demo, status, value })
     }
 
-    return projects
+    const canCreate = !$('.projects-actions a').hasClass('is-disabled')
+
+    return { projects, canCreate }
   } else {
     // fetch from api
   }
