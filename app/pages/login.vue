@@ -20,9 +20,17 @@ async function onSubmit(event: FormSubmitEvent<LoginSchema>) {
       Sign in to <span class="text-primary">Fortify</span>
     </h1>
     <p class="mb-4">
-      Please sign in to
-      <a href="https://siege.hackclub.com" target="_blank">Siege</a> and enter
-      the value of the <code>_siege_session</code> cookie below to sign in.
+      This website needs your Siege session token to perform actions on your
+      behalf. Please sign in to
+      <ULink
+        class="text-primary"
+        external
+        href="https://siege.hackclub.com"
+        target="_blank"
+        >Siege</ULink
+      >
+      and enter the value of the <code>_siege_session</code> cookie below to
+      sign in.
     </p>
 
     <UForm
