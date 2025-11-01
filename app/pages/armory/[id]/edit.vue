@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '@nuxt/ui'
-import { editProjectSchema, type EditProjectSchema } from '~~/shared/schemas'
+import { type EditProjectSchema } from '~~/shared/schemas'
 import { canEditProject } from '~~/shared/validation'
 import { FetchError } from 'ofetch'
 
@@ -13,31 +12,10 @@ const { data, error } = await useFetch(`/api/projects/${id}`)
 if (error.value || !data.value || !canEditProject(data.value)) {
   throw navigateTo(`/armory/${id}`)
 }
-const { data: hackatimeData, error: hackatimeError } = await useFetch(
-  `/api/projects/${id}/hackatime-projects`
-)
-if (hackatimeError.value || !hackatimeData.value) {
-  throw navigateTo(`/armory/${id}`)
-}
 
-const state = reactive<EditProjectSchema>({
-  title: data.value.title || '',
-  description: data.value.description || '',
-  repo: data.value.repo || '',
-  demo: data.value.demo || '',
-  hackatime_projects: data.value.hackatime_projects,
-  screenshot: null,
-})
-
-const screenshotFile = ref<File | null>(null)
-
-async function onSubmit(eventData: EditProjectSchema) {
+async function onSubmit(data: EditProjectSchema) {
   try {
     loadingIndicator.start()
-    const data: EditProjectSchema = { ...eventData }
-    if (screenshotFile.value) {
-      data.screenshot = await blobToBase64URL(screenshotFile.value)
-    }
     await $fetch(`/api/projects/${id}`, {
       method: 'PUT',
       body: data,

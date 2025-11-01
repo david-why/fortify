@@ -8,3 +8,7 @@ export function canEditProject(project: Pick<Project, 'status' | 'is_self'>) {
 export function canSubmitProject(project: Pick<Project, 'status' | 'is_self'>) {
   return project.is_self && project.status === 'building'
 }
+
+export function canDestroyProject(project: Pick<Project, 'status' | 'is_self'>) {
+  return project.is_self && project.status === 'building'
+}

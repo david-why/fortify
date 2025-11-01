@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FetchError } from 'ofetch'
-import { canEditProject } from '~~/shared/validation'
+import { canDestroyProject, canEditProject } from '~~/shared/validation'
 
 const route = useRoute()
 const loadingIndicator = useLoadingIndicator()
@@ -20,6 +20,7 @@ const project = computed(() => {
 })
 
 const submitCounter = ref(0)
+const deleteCounter = ref(0)
 
 async function submitProject(isUpdate: boolean) {
   loadingIndicator.start()
@@ -44,6 +45,26 @@ async function submitProject(isUpdate: boolean) {
     await refreshData()
   } finally {
     loadingIndicator.finish()
+  }
+}
+
+async function deleteProject() {
+  loadingIndicator.start()
+  try {
+    await $fetch(`/api/projects/${id}`, {
+      method: 'DELETE',
+    })
+    await navigateTo('/armory')
+    return
+  } catch (e) {
+    loadingIndicator.finish()
+    console.error(e)
+    if (e instanceof FetchError) {
+      alert(e.message)
+    } else {
+      alert(String(e))
+    }
+    return
   }
 }
 </script>
@@ -86,6 +107,12 @@ async function submitProject(isUpdate: boolean) {
       :key="submitCounter"
       :project="project"
       @submit="submitProject"
+    />
+
+    <DeleteModal
+      :key="deleteCounter"
+      :project="project"
+      @confirm="deleteProject"
     />
   </div>
   <div class="mb-4" v-if="project.screenshot">

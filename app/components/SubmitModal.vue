@@ -39,7 +39,7 @@ const isReady = computed(
   () => checkboxItems.value.length === checkboxState.value.length
 )
 
-function onSubmitClicked(close: () => void) {
+function onSubmitClicked() {
   emit('submit', isUpdate.value)
   isSubmitting.value = true
 }
@@ -108,7 +108,7 @@ onMounted(async () => {
       <UButton
         color="primary"
         :disabled="!isReady || isSubmitting"
-        @click="onSubmitClicked(close)"
+        @click="onSubmitClicked"
         >Submit</UButton
       >
       <UButton
