@@ -1,6 +1,9 @@
 <script setup lang="ts">
 const { data, error } = await useFetch('/api/users/me/projects')
 if (error.value) {
+  if (error.value.statusCode === 401) {
+    throw navigateTo('/login')
+  }
   console.error(error.value, error.value.message)
   throw navigateTo('/')
 }

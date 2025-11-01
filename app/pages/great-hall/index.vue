@@ -10,6 +10,9 @@ const { data, error, refresh } = await useFetch('/api/ballot', {
   watch: false,
 })
 if (error.value) {
+  if (error.value.statusCode === 401) {
+    throw navigateTo('/login')
+  }
   throw navigateTo('/')
 }
 

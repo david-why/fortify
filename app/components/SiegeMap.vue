@@ -1,6 +1,4 @@
 <script setup lang="ts">
-const router = useRouter()
-
 const layers = computed(() => [
   { image: '/images/castle/0-sky.webp' },
   { image: '/images/castle/1-mountains.webp' },
@@ -18,7 +16,7 @@ const layers = computed(() => [
   { image: '/images/castle/logo.webp' },
 ])
 
-function onSectionClicked(
+async function onSectionClicked(
   name:
     | 'chambers'
     | 'keep'
@@ -30,9 +28,11 @@ function onSectionClicked(
 ) {
   switch (name) {
     case 'armory':
-      return router.push('/armory')
+      return navigateTo('/armory')
+    case 'great-hall':
+      return navigateTo('/great-hall')
     default:
-      return router.push('/dev')
+      return navigateTo('/dev')
   }
 }
 </script>
