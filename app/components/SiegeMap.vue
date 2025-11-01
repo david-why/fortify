@@ -12,7 +12,6 @@ const layers = computed(() => [
   { image: '/images/castle/9-fountain.webp' },
   { image: '/images/castle/10-catacombs.webp' },
   { image: '/images/castle/11-foreground.webp' },
-  { image: '/images/castle/12-lighting.webp' },
   { image: '/images/castle/logo.webp' },
 ])
 
