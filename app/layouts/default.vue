@@ -15,6 +15,12 @@ const navItems = computed<NavigationMenuItem[]>(() => [
     to: '/armory',
     icon: 'i-material-symbols-swords',
     active: route.path === '/armory',
+  },
+  {
+    label: 'Great Hall',
+    to: '/great-hall',
+    icon: 'i-material-symbols-account-balance',
+    active: route.path === '/great-hall',
   }
 ])
 </script>
