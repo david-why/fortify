@@ -19,6 +19,7 @@ const project = computed(() => {
   return data.value!
 })
 
+const isJumpscareOpen = ref(false)
 const submitCounter = ref(0)
 const deleteCounter = ref(0)
 
@@ -67,6 +68,13 @@ async function deleteProject() {
     return
   }
 }
+
+async function editClicked() {
+  isJumpscareOpen.value = true
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+  isJumpscareOpen.value = false
+  await navigateTo(`/armory/${id}/edit`)
+}
 </script>
 
 <template>
@@ -94,7 +102,7 @@ async function deleteProject() {
   </div>
   <div class="flex flex-wrap gap-2 mb-4" v-if="project.is_self">
     <UButton
-      :href="`/armory/${id}/edit`"
+      @click="editClicked"
       color="neutral"
       variant="subtle"
       :disabled="!canEditProject(project)"
@@ -118,4 +126,10 @@ async function deleteProject() {
   <div class="mb-4" v-if="project.screenshot">
     <img :src="project.screenshot" class="max-h-96" />
   </div>
+
+  <UModal fullscreen :open="isJumpscareOpen">
+    <template #content>
+      <img src="/images/jumpscare.jpeg" />
+    </template>
+  </UModal>
 </template>

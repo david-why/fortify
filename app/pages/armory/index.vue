@@ -12,6 +12,11 @@ const projects = computed(() =>
   data.value?.projects.toSorted((a, b) => a.week - b.week)
 )
 const canCreate = computed(() => data.value?.canCreate)
+
+async function onClickProject(project: UserProject) {
+  document.body.style.backgroundColor = 'var(--ui-color-error-900)'
+  await navigateTo(`/armory/${project.id}`)
+}
 </script>
 
 <template>
@@ -21,9 +26,11 @@ const canCreate = computed(() => data.value?.canCreate)
   </div>
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 align-stretch">
     <ULink
-      :to="`/armory/${project.id}`"
       v-for="project in projects"
       :key="project.title"
+      @click="onClickProject(project)"
+      as="a"
+      class="cursor-pointer"
     >
       <UCard class="h-full" variant="subtle">
         <template #header>

@@ -59,7 +59,7 @@ onMounted(async () => {
   }
   if (project.demo) {
     try {
-      const res = await fetch(project.demo, { method: 'HEAD' })
+      await fetch(project.demo, { method: 'HEAD', mode: 'no-cors' })
       checkboxState.value.push('demo_live')
     } catch {}
   }
