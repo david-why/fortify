@@ -2,6 +2,7 @@
 import { FetchError } from 'ofetch'
 import { canDestroyProject, canEditProject } from '~~/shared/validation'
 
+const settings = useFortifySettings()
 const route = useRoute()
 const loadingIndicator = useLoadingIndicator()
 const { id } = route.params as { id: string }
@@ -70,9 +71,11 @@ async function deleteProject() {
 }
 
 async function editClicked() {
-  isJumpscareOpen.value = true
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-  isJumpscareOpen.value = false
+  if (!settings.hideJumpscares) {
+    isJumpscareOpen.value = true
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    isJumpscareOpen.value = false
+  }
   await navigateTo(`/armory/${id}/edit`)
 }
 </script>

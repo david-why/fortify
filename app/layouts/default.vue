@@ -21,7 +21,13 @@ const navItems = computed<NavigationMenuItem[]>(() => [
     to: '/great-hall',
     icon: 'i-material-symbols-account-balance',
     active: route.path === '/great-hall',
-  }
+  },
+  {
+    label: 'Settings',
+    to: '/settings',
+    icon: 'i-material-symbols-settings',
+    active: route.path === '/settings',
+  },
 ])
 </script>
 
@@ -34,7 +40,11 @@ const navItems = computed<NavigationMenuItem[]>(() => [
     <UNavigationMenu :items="navItems" />
 
     <template #body>
-      <UNavigationMenu :items="navItems" orientation="vertical" class="-mx-2.5" />
+      <UNavigationMenu
+        :items="navItems"
+        orientation="vertical"
+        class="-mx-2.5"
+      />
     </template>
   </UHeader>
 

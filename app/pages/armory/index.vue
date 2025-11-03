@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const settings = useFortifySettings()
+
 const { data, error } = await useFetch('/api/users/me/projects')
 if (error.value) {
   if (error.value.statusCode === 401) {
@@ -14,7 +16,9 @@ const projects = computed(() =>
 const canCreate = computed(() => data.value?.canCreate)
 
 async function onClickProject(project: UserProject) {
-  document.body.style.backgroundColor = 'var(--ui-color-error-900)'
+  if (!settings.hideJumpscares) {
+    document.body.style.backgroundColor = 'var(--ui-color-error-900)'
+  }
   await navigateTo(`/armory/${project.id}`)
 }
 </script>
