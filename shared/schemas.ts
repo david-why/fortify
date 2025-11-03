@@ -51,3 +51,11 @@ export type UpdateStarsSchema = z.infer<typeof updateStarsSchema>
 export const submitBallotSchema = z.object({
   reasoning: z.string(),
 })
+
+export type SubmitBallotSchema = z.infer<typeof submitBallotSchema>
+
+export const purchaseItemSchema = z.object({
+  item_name: z.string(),
+})
+
+export type PurchaseItemSchema = z.infer<typeof purchaseItemSchema>

@@ -23,6 +23,12 @@ const navItems = computed<NavigationMenuItem[]>(() => [
     active: route.path === '/great-hall',
   },
   {
+    label: 'Market',
+    to: '/market',
+    icon: 'i-material-symbols-shopping-bag',
+    active: route.path === '/market',
+  },
+  {
     label: 'Settings',
     to: '/settings',
     icon: 'i-material-symbols-settings',

@@ -6,13 +6,14 @@ export default defineEventHandler(async (event) => {
     'https://siege.hackclub.com/market'
   )
 
-  const [shopData, techTreeData, { purchases }, mercData, ttMercData] =
+  const [shopData, techTreeData, { purchases }, mercData, ttMercData, coins] =
     await Promise.all([
       getShopData(),
       getTechTreeData(event, csrfToken),
       getUserPurchases(event, csrfToken),
       getMercenaryData(event, csrfToken),
       getTravellingMercData(event, csrfToken),
+      getUserCoins(event, csrfToken),
     ])
 
   const getPurchasedCount = (name: string) =>
@@ -68,6 +69,7 @@ export default defineEventHandler(async (event) => {
 
   return {
     items: shopItems,
+    coins,
     // tech_tree: techTreeData,
   }
 })
@@ -130,4 +132,18 @@ async function getTravellingMercData(event: H3Event, csrfToken: string) {
   ).then((r) => r.json())
 
   return data
+}
+
+async function getUserCoins(event: H3Event, csrfToken: string) {
+  const data: { coins: number } = await fetch(
+    'https://siege.hackclub.com/market/user_coins',
+    {
+      headers: {
+        Cookie: `_siege_session=${getSessionCookie(event)}`,
+        'x-csrf-token': csrfToken,
+      },
+    }
+  ).then((r) => r.json())
+
+  return data.coins
 }
