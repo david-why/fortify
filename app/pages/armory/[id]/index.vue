@@ -71,7 +71,7 @@ async function deleteProject() {
 }
 
 async function editClicked() {
-  if (!settings.hideJumpscares) {
+  if (!settings.value.hideJumpscares) {
     isJumpscareOpen.value = true
     await new Promise((resolve) => setTimeout(resolve, 1000))
     isJumpscareOpen.value = false

@@ -16,7 +16,7 @@ const projects = computed(() =>
 const canCreate = computed(() => data.value?.canCreate)
 
 async function onClickProject(project: UserProject) {
-  if (!settings.hideJumpscares) {
+  if (!settings.value.hideJumpscares) {
     document.body.style.backgroundColor = 'var(--ui-color-error-900)'
   }
   await navigateTo(`/armory/${project.id}`)
