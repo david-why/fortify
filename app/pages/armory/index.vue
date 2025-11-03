@@ -31,7 +31,7 @@ async function onClickProject(project: UserProject) {
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 align-stretch">
     <ULink
       v-for="project in projects"
-      :key="project.title"
+      :key="project.id"
       @click="onClickProject(project)"
       as="a"
       class="cursor-pointer"

@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "deploy": "nuxt build --preset cloudflare-pages && wrangler pages deploy dist"
   },
   "dependencies": {
     "@iconify-json/material-symbols": "^1.2.44",
@@ -22,6 +23,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@types/node": "^24.9.1"
+    "@types/node": "^24.9.1",
+    "wrangler": "^4.45.3"
   }
 }
