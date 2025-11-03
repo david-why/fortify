@@ -9,7 +9,7 @@ export async function getCsrfTokens(event: H3Event, url: string) {
     redirect: 'manual',
   })
   if (pageRes.status !== 200) {
-    throw new Error('Failed to get project edit page')
+    throw new Error('Failed to get page for CSRF')
   }
   const pageHtml = await pageRes.text()
 

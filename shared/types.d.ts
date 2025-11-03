@@ -36,6 +36,75 @@ declare interface APIUser {
   >[]
 }
 
+declare interface APIShopData {
+  cosmetics: APIShopCosmeticsItem[]
+  physical_items: APIShopPhysicalItem[]
+}
+
+declare interface APIShopItem {
+  id: number
+  name: string
+  description: string
+  cost: number
+}
+
+declare interface APIShopCosmeticsItem extends APIShopItem {
+  type: string
+}
+
+declare interface APIShopPhysicalItem extends APIShopItem {
+  digital: boolean
+}
+
+declare interface SiegeTechTree {
+  laptop: SiegeTreeBase
+  laptop_grant: SiegeTreeBase
+  tablet: SiegeTreeBase
+}
+
+declare interface SiegeTreeBase {
+  type: string
+  initialNode: SiegeTreeInitialNode
+  branches: Record<string, Record<string, SiegeTreeNode>>
+}
+
+declare interface SiegeTreeNode {
+  id: string
+  title: string
+  price: number
+  description: string
+  maxPurchases?: number
+  currentPurchases?: number
+  purchased: boolean
+}
+
+declare interface SiegeTreeInitialNode extends SiegeTreeNode {
+  shape: 'pill' | 'circle'
+  size: 'large'
+  options: { id: string; title: string; description: string }[]
+  purchased?: true
+}
+
+declare interface SiegeUserPurchases {
+  purchases: SiegeUserPurchase[]
+}
+
+declare interface SiegeUserPurchase {
+  item_name: string
+  quantity: number
+  total_coins_spent: number
+}
+
+declare interface SiegeMercenaryData {
+  price: number
+  count: number
+}
+
+declare interface SiegeTravelMercData {
+  quantity: number
+  inventory_count: number
+}
+
 declare interface Project {
   id: number
   title: string
@@ -91,3 +160,16 @@ declare interface SiegeBallot {
 declare type Vote = Omit<SiegeVote, 'project'> & { project: UserProject }
 
 declare type Ballot = Omit<SiegeBallot, 'votes'> & { votes: Vote[] }
+
+declare type ShopItem = {
+  id: number
+  name: string
+  description: string
+  cost: number
+  purchased: number
+  stock?: number
+} & (
+  | { kind: 'cosmetics'; type: string }
+  | { kind: 'physical'; digital: boolean }
+  | { kind: 'special' }
+)

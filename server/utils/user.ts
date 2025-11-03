@@ -14,5 +14,6 @@ export function getSessionCookie(event: H3Event, required: boolean = true) {
       data: { message: 'You are not signed in' },
     })
   }
-  return cookie
+  // ensure encoded :(
+  return cookie ? encodeURIComponent(decodeURIComponent(cookie)) : cookie
 }
