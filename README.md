@@ -2,6 +2,13 @@
 
 [Siege](https://siege.hackclub.com), but an alt client. Also exposes a fully functional Siege API that you can access with your `_siege_session` cookie (subject to change at any time).
 
+## Versions
+
+Here are some versions of this website, in case you want to see what it looked like
+
+- Current version: [link](https://fortify.davidwhy.me)
+- Siege Week 9 submission (2025-11-03): [demo video](https://hc-cdn.hel1.your-objectstorage.com/s/v3/0222b1942f61b698f3b21a8ea860968c51cfc35b_fortify.mp4) | [link to this version](https://61fca41c.fortify-4k6.pages.dev)
+
 ## Features & TODO
 
 - [x] Home page
