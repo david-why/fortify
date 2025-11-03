@@ -33,7 +33,7 @@ async function onClickProject(project: UserProject) {
       v-for="project in projects"
       :key="project.id"
       @click="onClickProject(project)"
-      as="a"
+      as="div"
       class="cursor-pointer"
     >
       <UserProjectCard class="h-full" :project="project" />
