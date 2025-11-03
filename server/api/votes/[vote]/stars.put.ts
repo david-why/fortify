@@ -1,7 +1,7 @@
 import { updateStarsSchema } from '~~/shared/schemas'
 
 export default defineEventHandler(async (event) => {
-  const projectID = getRouterParam(event, 'project')!
+  const voteID = getRouterParam(event, 'vote')!
   const { stars } = await readValidatedBody(event, updateStarsSchema.parseAsync)
 
   const { csrfToken } = await getCsrfTokens(
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   )
 
   const res = await fetch(
-    `https://siege.hackclub.com/votes/${projectID}/update_stars`,
+    `https://siege.hackclub.com/votes/${voteID}/update_stars`,
     {
       method: 'PATCH',
       headers: {

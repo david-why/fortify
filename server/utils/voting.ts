@@ -3,7 +3,7 @@ import type { H3Event } from 'h3'
 // voting states:
 // - voting
 // - already_voted, closed, thanks
-// - trick_or_treating (for halloween)
+// - ~~trick_or_treating (for halloween)~~
 
 export async function getCurrentBallotData(
   event: H3Event,
@@ -34,6 +34,7 @@ export async function getCurrentBallotData(
   const meepleMessageMatch = htmlText.match(
     /const meepleMessage = ['"](.*)['"];/
   )
+  const votesMatch = htmlText.match(/const votes = (\[.*\]);/)
   const allowRevoteMatch = htmlText.match(/const allowRevote = (.*);/)
   if (
     !currentBallotIdMatch ||
@@ -47,7 +48,24 @@ export async function getCurrentBallotData(
   const currentBallotId = parseInt(currentBallotIdMatch[1]!)
   const votingState = votingStateMatch[1]!
   const meepleMessage = meepleMessageMatch[1]!
+  const siegeVotes = votesMatch
+    ? (JSON.parse(votesMatch[1]!) as SiegeVote[])
+    : []
   const allowRevote = allowRevoteMatch[1]! === 'true'
 
-  return { id: currentBallotId, votingState, meepleMessage, allowRevote }
+  const votes = siegeVotes.map((v) => ({
+    ...v,
+    project: {
+      id: v.project.id,
+      title: v.project.name,
+      week: v.week,
+      description: v.project.description,
+      repo: v.project.repo_url || null,
+      demo: v.project.demo_url || null,
+      status: v.project.status,
+      value: 0.0,
+    },
+  }))
+
+  return { id: currentBallotId, votingState, meepleMessage, votes, allowRevote }
 }

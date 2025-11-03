@@ -56,9 +56,38 @@ declare type UserProject = Omit<
   'screenshot' | 'hours' | 'is_self' | 'hackatime_projects'
 >
 
-declare interface Ballot {
+declare type SiegeVoteUser = Pick<APIUser, 'id' | 'name'> & {
+  meeple: { color: string }
+}
+
+declare type SiegeVoteProject = Pick<
+  APIProject,
+  | 'id'
+  | 'name'
+  | 'description'
+  | 'status'
+  | 'repo_url'
+  | 'demo_url'
+  | 'created_at'
+  | 'week_badge_text'
+> & { user: SiegeVoteUser }
+
+declare interface SiegeVote {
+  id: number
+  week: number
+  voted: boolean
+  star_count: number // 1 - 5
+  project: SiegeVoteProject
+}
+
+declare interface SiegeBallot {
   id: number
   votingState: string
   meepleMessage: string
+  votes: SiegeVote[]
   allowRevote: boolean
 }
+
+declare type Vote = Omit<SiegeVote, 'project'> & { project: UserProject }
+
+declare type Ballot = Omit<SiegeBallot, 'votes'> & { votes: Vote[] }

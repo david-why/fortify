@@ -32,20 +32,7 @@ async function onClickProject(project: UserProject) {
       as="a"
       class="cursor-pointer"
     >
-      <UCard class="h-full" variant="subtle">
-        <template #header>
-          <h2 class="text-xl font-semibold">{{ project.title }}</h2>
-          <h3>Week {{ project.week }}</h3>
-        </template>
-
-        <p class="whitespace-pre-wrap mb-4">{{ project.description }}</p>
-
-        <div class="flex flex-wrap gap-2 mb-4">
-          <ProjectLinks :project="project" />
-        </div>
-
-        <div class="text-sm"><ProjectStatus :project="project" /></div>
-      </UCard>
+      <UserProjectCard class="h-full" :project="project" />
     </ULink>
   </div>
 </template>
