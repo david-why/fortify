@@ -59,3 +59,9 @@ export const purchaseItemSchema = z.object({
 })
 
 export type PurchaseItemSchema = z.infer<typeof purchaseItemSchema>
+
+export const setMainDeviceSchema = z.object({
+  device_id: z.string(),
+})
+
+export type SetMainDeviceSchema = z.infer<typeof setMainDeviceSchema>

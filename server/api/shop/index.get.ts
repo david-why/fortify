@@ -70,7 +70,7 @@ export default defineEventHandler(async (event) => {
   return {
     items: shopItems,
     coins,
-    // tech_tree: techTreeData,
+    tech_tree: techTreeData,
   }
 })
 

@@ -49,37 +49,54 @@ async function onPurchaseItem(item: ShopItem) {
     }
   }
 }
+
+async function onTreeUpdated() {
+  try {
+    shopDisabled.value = true
+    loadingIndicator.start()
+    await refresh()
+    shopDisabled.value = false
+  } finally {
+    loadingIndicator.finish()
+  }
+}
 </script>
 
 <template>
   <h1 class="text-3xl font-bold mb-4">Market</h1>
 
-  <template v-if="status === 'success'">
-    <p class="mb-4 flex items-center">
-      Current&nbsp; <CoinIcon />: {{ shop.coins }}
-    </p>
-    <p class="mb-4">Only "Other stuff" for now... device upgrades to come!</p>
+  <p class="mb-4 flex items-center">
+    Current&nbsp; <CoinIcon />: {{ shop.coins }}
+  </p>
+  <p class="mb-4">Only "Other stuff" for now... device upgrades to come!</p>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-      <UCard v-for="item in displayItems" :key="item.id">
-        <h2 class="text-xl font-semibold mb-2">{{ item.name }}</h2>
-        <p class="mb-2 flex items-center gap-1"><CoinIcon /> {{ item.cost }}</p>
-        <p class="mb-2">{{ item.description }}</p>
-        <p class="text-sm mb-2" v-if="item.stock">
-          Purchased: {{ item.purchased }} / {{ item.stock }}
-        </p>
-        <p class="text-sm mb-2" v-else-if="item.purchased">
-          Purchased: {{ item.purchased }}
-        </p>
-        <div>
-          <UButton
-            variant="subtle"
-            @click="onPurchaseItem(item)"
-            :disabled="shopDisabled || shop.coins < item.cost"
-            >Buy!</UButton
-          >
-        </div>
-      </UCard>
-    </div>
-  </template>
+  <div class="mb-4">
+    <TechTree
+      :tree="shop.tech_tree"
+      :disabled="shopDisabled"
+      @update="onTreeUpdated"
+    />
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <UCard v-for="item in displayItems" :key="item.id">
+      <h2 class="text-xl font-semibold mb-2">{{ item.name }}</h2>
+      <p class="mb-2 flex items-center gap-1"><CoinIcon /> {{ item.cost }}</p>
+      <p class="mb-2">{{ item.description }}</p>
+      <p class="text-sm mb-2" v-if="item.stock">
+        Purchased: {{ item.purchased }} / {{ item.stock }}
+      </p>
+      <p class="text-sm mb-2" v-else-if="item.purchased">
+        Purchased: {{ item.purchased }}
+      </p>
+      <div>
+        <UButton
+          variant="subtle"
+          @click="onPurchaseItem(item)"
+          :disabled="shopDisabled || shop.coins < item.cost"
+          >Buy!</UButton
+        >
+      </div>
+    </UCard>
+  </div>
 </template>
