@@ -1,10 +1,35 @@
+import { load } from 'cheerio'
 import type { H3Event } from 'h3'
 
 export default defineEventHandler(async (event) => {
-  const { csrfToken } = await getCsrfTokens(
-    event,
-    'https://siege.hackclub.com/market'
+  // duplicate logic because i also need the actual page
+  const pageRes = await fetch('https://siege.hackclub.com/market', {
+    headers: {
+      Cookie: `_siege_session=${getSessionCookie(event)}`,
+    },
+    redirect: 'manual',
+  })
+  if (pageRes.status !== 200) {
+    throw new Error('Failed to get market page')
+  }
+  const pageHtml = await pageRes.text()
+
+  const $ = load(pageHtml)
+  const csrfToken = $('meta[name="csrf-token"]').attr('content')
+  if (!csrfToken) {
+    throw new Error('Failed to get CSRF token')
+  }
+  const containerElement = $('.market-container')
+  const supportedRegionAttr = containerElement.attr(
+    'data-market-user-in-supported-region-value'
   )
+  if (
+    !supportedRegionAttr ||
+    !['true', 'false'].includes(supportedRegionAttr)
+  ) {
+    throw new Error('Support region value not found on market page')
+  }
+  const supportedRegion = supportedRegionAttr === 'true'
 
   const [shopData, techTreeData, { purchases }, mercData, ttMercData, coins] =
     await Promise.all([
@@ -71,6 +96,7 @@ export default defineEventHandler(async (event) => {
     items: shopItems,
     coins,
     tech_tree: techTreeData,
+    is_region_supported: supportedRegion,
   }
 })
 
@@ -84,12 +110,14 @@ async function getTechTreeData(
   event: H3Event,
   csrfToken: string
 ): Promise<SiegeTechTree> {
-  return await fetch('https://siege.hackclub.com/market/tech_tree_data', {
+  const data = await fetch('https://siege.hackclub.com/market/tech_tree_data', {
     headers: {
       Cookie: `_siege_session=${getSessionCookie(event)}`,
       'x-csrf-token': csrfToken,
     },
   }).then((r) => r.json())
+  console.log('fetched tech tree data')
+  return data
 }
 
 async function getUserPurchases(event: H3Event, csrfToken: string) {
@@ -102,6 +130,7 @@ async function getUserPurchases(event: H3Event, csrfToken: string) {
       },
     }
   ).then((r) => r.json())
+  console.log('fetched purchase data')
 
   return data
 }
@@ -116,6 +145,7 @@ async function getMercenaryData(event: H3Event, csrfToken: string) {
       },
     }
   ).then((r) => r.json())
+  console.log('fetched mercenary data')
 
   return data
 }
@@ -130,6 +160,7 @@ async function getTravellingMercData(event: H3Event, csrfToken: string) {
       },
     }
   ).then((r) => r.json())
+  console.log('fetched travelling merc data')
 
   return data
 }
@@ -144,6 +175,7 @@ async function getUserCoins(event: H3Event, csrfToken: string) {
       },
     }
   ).then((r) => r.json())
+  console.log('fetched user coins data')
 
   return data.coins
 }

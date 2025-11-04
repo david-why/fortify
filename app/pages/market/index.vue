@@ -50,10 +50,10 @@ async function onPurchaseItem(item: ShopItem) {
   }
 }
 
+// loadingIndicator will be set when this is called
 async function onTreeUpdated() {
   try {
     shopDisabled.value = true
-    loadingIndicator.start()
     await refresh()
     shopDisabled.value = false
   } finally {
@@ -68,12 +68,12 @@ async function onTreeUpdated() {
   <p class="mb-4 flex items-center">
     Current&nbsp; <CoinIcon />: {{ shop.coins }}
   </p>
-  <p class="mb-4">Only "Other stuff" for now... device upgrades to come!</p>
 
   <div class="mb-4">
     <TechTree
       :tree="shop.tech_tree"
       :disabled="shopDisabled"
+      :supported-region="shop.is_region_supported"
       @update="onTreeUpdated"
     />
   </div>

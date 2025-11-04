@@ -5,8 +5,13 @@ import type { TreeItemSelectEvent } from 'reka-ui'
 const loadingIndicator = useLoadingIndicator()
 const toast = useToast()
 
-const { tree: techTree, disabled: globalDisabled = false } = defineProps<{
+const {
+  tree: techTree,
+  supportedRegion,
+  disabled: globalDisabled = false,
+} = defineProps<{
   tree: SiegeTechTree
+  supportedRegion: boolean
   disabled?: boolean
 }>()
 
@@ -15,7 +20,7 @@ const emit = defineEmits<{
 }>()
 
 const treeDisabled = ref(false)
-const treeSelected = ref([])
+const treeSelected = ref<CustomTreeItem[]>([])
 
 const deviceTypeNames: Record<string, string> = {
   laptop: 'Laptop',
@@ -28,7 +33,10 @@ interface CustomTreeItem extends TreeItem {
   children?: CustomTreeItem[]
 }
 const displayTree = computed<CustomTreeItem[]>(() => {
-  return [techTree.laptop, techTree.laptop_grant, techTree.tablet].map(
+  const options = [
+    supportedRegion ? techTree.laptop : techTree.laptop_grant,
+  ].concat([techTree.tablet])
+  return options.map(
     (tree) => {
       let children: CustomTreeItem[]
       let id: string | undefined = undefined
@@ -66,6 +74,16 @@ async function onSelect(event: TreeItemSelectEvent<CustomTreeItem>) {
       event.preventDefault()
       return
     }
+    // typescript really hates me :(
+    const indicesToRemove: number[] = []
+    for (const [idx, val] of treeSelected.value.entries()) {
+      if (val.id?.startsWith('main-') && val.id !== id) {
+        indicesToRemove.push(idx)
+      }
+    }
+    for (const idx of indicesToRemove.reverse()) {
+      treeSelected.value.splice(idx, 1)
+    }
     try {
       treeDisabled.value = true
       loadingIndicator.start()
@@ -73,7 +91,8 @@ async function onSelect(event: TreeItemSelectEvent<CustomTreeItem>) {
         method: 'POST',
         body: { device_id: id.substring(5) },
       })
-      loadingIndicator.finish()
+      emit('update')
+      treeDisabled.value = false
     } catch (e) {
       loadingIndicator.finish({ error: true })
       toast.add({
@@ -81,9 +100,6 @@ async function onSelect(event: TreeItemSelectEvent<CustomTreeItem>) {
         title: 'Failed to save main device',
         description: String(e),
       })
-    } finally {
-      treeDisabled.value = false
-      emit('update')
     }
   }
 }
