@@ -74,6 +74,7 @@ async function onTreeUpdated() {
       :tree="shop.tech_tree"
       :disabled="shopDisabled"
       :supported-region="shop.is_region_supported"
+      :user-device="shop.user_device"
       @update="onTreeUpdated"
     />
   </div>

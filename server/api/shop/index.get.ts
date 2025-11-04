@@ -31,15 +31,23 @@ export default defineEventHandler(async (event) => {
   }
   const supportedRegion = supportedRegionAttr === 'true'
 
-  const [shopData, techTreeData, { purchases }, mercData, ttMercData, coins] =
-    await Promise.all([
-      getShopData(),
-      getTechTreeData(event, csrfToken),
-      getUserPurchases(event, csrfToken),
-      getMercenaryData(event, csrfToken),
-      getTravellingMercData(event, csrfToken),
-      getUserCoins(event, csrfToken),
-    ])
+  const [
+    shopData,
+    techTreeData,
+    { purchases },
+    mercData,
+    ttMercData,
+    coins,
+    userDevice,
+  ] = await Promise.all([
+    getShopData(),
+    getTechTreeData(event, csrfToken),
+    getUserPurchases(event, csrfToken),
+    getMercenaryData(event, csrfToken),
+    getTravellingMercData(event, csrfToken),
+    getUserCoins(event, csrfToken),
+    getUserDevice(event, csrfToken),
+  ])
 
   const getPurchasedCount = (name: string) =>
     purchases.find((p) => p.item_name === name)?.quantity ?? 0
@@ -97,6 +105,7 @@ export default defineEventHandler(async (event) => {
     coins,
     tech_tree: techTreeData,
     is_region_supported: supportedRegion,
+    user_device: userDevice,
   }
 })
 
@@ -178,4 +187,19 @@ async function getUserCoins(event: H3Event, csrfToken: string) {
   console.log('fetched user coins data')
 
   return data.coins
+}
+
+async function getUserDevice(event: H3Event, csrfToken: string) {
+  const data: SiegeUserDevice = await fetch(
+    'https://siege.hackclub.com/market/get_main_device',
+    {
+      headers: {
+        Cookie: `_siege_session=${getSessionCookie(event)}`,
+        'x-csrf-token': csrfToken,
+      },
+    }
+  ).then((r) => r.json())
+  console.log('fetched user device')
+
+  return data
 }

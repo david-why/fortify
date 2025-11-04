@@ -76,6 +76,7 @@ declare interface SiegeTreeNode {
   maxPurchases?: number
   currentPurchases?: number
   purchased: boolean
+  requires?: string
 }
 
 declare interface SiegeTreeInitialNode extends SiegeTreeNode {
@@ -103,6 +104,12 @@ declare interface SiegeMercenaryData {
 declare interface SiegeTravelMercData {
   quantity: number
   inventory_count: number
+}
+
+declare interface SiegeUserDevice {
+  main_device: string
+  main_device_name: string
+  has_main_device: boolean
 }
 
 declare interface Project {
