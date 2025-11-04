@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import type { TreeItem } from '@nuxt/ui'
-import type { TreeItemSelectEvent } from 'reka-ui'
-
 const loadingIndicator = useLoadingIndicator()
 const toast = useToast()
 
@@ -19,221 +16,143 @@ const {
 
 const emit = defineEmits<{
   update: []
+  purchase: [name: string]
 }>()
 
-const treeDisabled = ref(false)
-const treeSelected = ref<CustomTreeItem[]>([])
-
-const deviceTypeNames: Record<string, string> = {
+const DEVICE_TYPE_NAMES: Record<string, string> = {
   laptop: 'Laptop',
   laptop_grant: 'Laptop grant',
   tablet: 'Tablet',
 }
 
-interface CustomTreeItem extends TreeItem {
-  id?: string
-  children?: CustomTreeItem[]
-  description?: string
-}
-const displayTree = computed<CustomTreeItem[]>(() => {
-  const options = [
-    supportedRegion ? techTree.laptop : techTree.laptop_grant,
-  ].concat([techTree.tablet])
-  return options.map((tree) => {
-    let children: CustomTreeItem[]
-    let id: string | undefined = undefined
-    if (tree.initialNode.options) {
-      children = tree.initialNode.options.map((opt) => ({
-        id: `main-${opt.id}`,
-        label: opt.title,
-        defaultExpanded: true,
-        children:
-          opt.id === userDevice.main_device
-            ? getNodeChildren(tree, opt.id)
-            : undefined,
-      }))
-    } else {
-      children =
-        tree.initialNode.id === userDevice.main_device
-          ? getNodeChildren(tree, tree.initialNode.id)
-          : []
-      id = `main-${tree.initialNode.id}`
+const deviceTrees = computed(() => {
+  return [supportedRegion ? techTree.laptop : techTree.laptop_grant].concat([
+    techTree.tablet,
+  ])
+})
+const deviceTypeOptions = computed(() => {
+  return deviceTrees.value.flatMap((tree) => {
+    if (!tree.initialNode.options) {
+      return [
+        {
+          value: tree.initialNode.id,
+          label: DEVICE_TYPE_NAMES[tree.type],
+        },
+      ]
     }
+    return tree.initialNode.options.map((opt) => ({
+      value: opt.id,
+      label: `${DEVICE_TYPE_NAMES[tree.type]} - ${opt.title}`,
+    }))
+  })
+})
+const chosenDeviceBranch = computed(() => {
+  if (!chosenDevice.value) return []
+  for (const tree of Object.values(techTree) as SiegeTreeBase[]) {
+    if (
+      tree.initialNode.id === chosenDevice.value ||
+      tree.initialNode.options?.find((opt) => opt.id === chosenDevice.value)
+    ) {
+      return Object.values(tree.branches[chosenDevice.value]!)
+    }
+  }
+  console.warn('Cannot find branch', chosenDevice.value)
+  return []
+})
+const deviceUpgradeOptions = computed(() => {
+  const purchasedItems = chosenDeviceBranch.value
+    .filter((item) => item.purchased)
+    .map((item) => item.title)
+  return chosenDeviceBranch.value.map((item) => {
+    const requires = item.requires?.split(',') ?? []
+    const unsatisfiedReqs = requires.filter(
+      (item) => !purchasedItems.includes(item)
+    )
+    const maxPurchases =
+      item.maxPurchases === null ? null : item.maxPurchases ?? 1
+    const currentPurchases = item.currentPurchases ?? (item.purchased ? 1 : 0)
+    const disabled = !!(
+      unsatisfiedReqs.length ||
+      (maxPurchases && (item.currentPurchases || 0) > maxPurchases)
+    )
+    const limitText = maxPurchases
+      ? ` (${currentPurchases}/${maxPurchases})`
+      : null
+    const reqText = unsatisfiedReqs.length
+      ? `Requires ${unsatisfiedReqs.join(' & ')}`
+      : ''
     return {
-      id,
-      label: deviceTypeNames[tree.type],
-      disabled: !!tree.initialNode.options,
-      defaultExpanded: true,
-      children,
+      title: item.title,
+      cost: item.price,
+      description: item.description,
+      limitText,
+      reqText,
+      disabled,
     }
   })
 })
 
-// given a tree and main device id, get the children in a tree format
-// i hate algorithms (this isn't even hard lol)
-// but have fun reading this function :)))
-function getNodeChildren(base: SiegeTreeBase, mainID: string) {
-  const branchMap = base.branches[mainID]!
-  const rootNodes: CustomTreeItem[] = []
-  const allNodes: CustomTreeItem[] = []
-  const pendingItems: SiegeTreeNode[] = Object.values(branchMap)
-  const nextRoundItems: SiegeTreeNode[] = []
-  while (pendingItems.length) {
-    const startLength = pendingItems.length
-    for (const upgradeItem of pendingItems) {
-      let array = rootNodes
-      if (upgradeItem.requires) {
-        const maybeParent = allNodes.find(
-          (item) => item.label === upgradeItem.requires
-        )
-        if (!maybeParent) {
-          nextRoundItems.push(upgradeItem)
-          continue
-        }
-        if (!maybeParent.children) {
-          maybeParent.children = []
-        }
-        array = maybeParent.children
-      }
-      let description = upgradeItem.description
-      if (upgradeItem.maxPurchases) {
-        description += `\nPurchased: ${upgradeItem.currentPurchases ?? 0}/${
-          upgradeItem.maxPurchases
-        }`
-      }
-      const node = {
-        id: `upgrade-${upgradeItem.title}`,
-        label: upgradeItem.title,
-        description: description,
-        disabled:
-          (upgradeItem.currentPurchases ?? 0) >=
-          (upgradeItem.maxPurchases ?? Number.MAX_VALUE),
-        defaultExpanded: true,
-        children: [],
-      }
-      array.push(node)
-      allNodes.push(node)
-    }
-    if (nextRoundItems.length === startLength) {
-      console.warn(
-        'Made no progress this round, the following items are orphans',
-        nextRoundItems
-      )
-      break
-    }
-    pendingItems.splice(0, pendingItems.length, ...nextRoundItems)
-    nextRoundItems.length = 0
-  }
-  return rootNodes
-}
+const treeDisabled = ref(false)
 
-async function onSelect(event: TreeItemSelectEvent<CustomTreeItem>) {
-  const item = event.detail.value
-  if (!item || !item.id) {
-    event.preventDefault()
-    return
-  }
-  const id = item.id
-  const selected = !event.detail.isSelected
-  if (id.startsWith('main-')) {
-    if (!selected) {
-      // cannot deselect main devices
-      event.preventDefault()
-      return
-    }
-    // typescript really hates me :(
-    const indicesToRemove: number[] = []
-    for (const [idx, val] of treeSelected.value.entries()) {
-      if (val.id?.startsWith('main-') && val.id !== id) {
-        indicesToRemove.push(idx)
-      }
-    }
-    for (const idx of indicesToRemove.reverse()) {
-      treeSelected.value.splice(idx, 1)
-    }
-    try {
-      treeDisabled.value = true
-      loadingIndicator.start()
-      await $fetch(`/api/shop/device`, {
-        method: 'POST',
-        body: { device_id: id.substring(5) },
-      })
-      emit('update')
-      treeDisabled.value = false
-    } catch (e) {
-      loadingIndicator.finish({ error: true })
-      toast.add({
-        color: 'error',
-        title: 'Failed to save main device',
-        description: String(e),
-      })
-    }
-  } else if (id.startsWith('upgrade-')) {
-    event.preventDefault()
+const chosenDevice = ref(
+  userDevice.has_main_device ? userDevice.main_device : undefined
+)
+
+async function onChangeDevice(device: string) {
+  try {
+    treeDisabled.value = true
+    loadingIndicator.start()
+    await $fetch(`/api/shop/device`, {
+      method: 'POST',
+      body: { device_id: device },
+    })
+    treeDisabled.value = false
+    emit('update')
+  } catch (e) {
+    loadingIndicator.finish({ error: true })
+    toast.add({
+      color: 'error',
+      title: 'Failed to switch device',
+      description: String(e),
+    })
   }
 }
 
-// find a tree item from id
-function findItem(id: string) {
-  function findFromList(list: CustomTreeItem[]): CustomTreeItem | undefined {
-    for (const item of list) {
-      if (item.id === id) {
-        return item
-      }
-    }
-    for (const item of list) {
-      if (item.children) {
-        const res = findFromList(item.children)
-        if (res) {
-          return res
-        }
-      }
-    }
-  }
-  return findFromList(displayTree.value)
+async function purchaseUpgrade(name: string) {
+  emit('purchase', name)
 }
 
-onMounted(() => {
-  if (userDevice.has_main_device) {
-    const item = findItem(`main-${userDevice.main_device}`)
-    if (item) {
-      treeSelected.value.push(item)
-    }
-  }
-})
+watch(chosenDevice, (value) => value && onChangeDevice(value))
 </script>
 
 <template>
-  <UTree
-    v-model="treeSelected"
+  <URadioGroup
+    class="mb-4"
+    v-model="chosenDevice"
+    :items="deviceTypeOptions"
     :disabled="treeDisabled || globalDisabled"
-    :items="displayTree"
-    @select="onSelect"
-    @toggle.prevent
-    :multiple="true"
+  />
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
   >
-    <template
-      #item-leading="{
-        item: { id, disabled },
-        selected,
-        indeterminate,
-        handleSelect,
-      }"
-    >
-      <UCheckbox
-        :model-value="indeterminate ? 'indeterminate' : selected"
-        @change="handleSelect"
-        :disabled="disabled"
-        @click.stop
-        v-if="id?.startsWith('main-')"
-      />
-      <span v-else></span>
-    </template>
-    <template #item-label="{ item: { label, description } }">
-      <span class="text-left block">{{ label }}</span>
-      <span class="text-left block text-muted" v-if="description">{{
-        description
-      }}</span>
-    </template>
-  </UTree>
+    <UCard v-for="card in deviceUpgradeOptions">
+      <h2 class="text-xl font-semibold mb-2">
+        {{ card.title }}{{ card.limitText }}
+      </h2>
+      <p class="mb-2"><CoinIcon/> {{ card.cost }}</p>
+      <p class="mb-4">{{ card.description }}</p>
+      <div class="flex items-center gap-2">
+        <UButton
+          :color="card.disabled ? 'neutral' : 'primary'"
+          variant="subtle"
+          @click="purchaseUpgrade(card.title)"
+          :disabled="treeDisabled || globalDisabled || card.disabled"
+          >Buy!</UButton
+        >
+        <span class="text-sm text-warning" v-if="card.reqText">{{
+          card.reqText
+        }}</span>
+      </div>
+    </UCard>
+  </div>
 </template>

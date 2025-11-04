@@ -27,14 +27,14 @@ const displayItems = computed(() =>
   )
 )
 
-async function onPurchaseItem(item: ShopItem) {
-  if (confirm(`Are you sure you want to buy ${item.name}?`)) {
+async function onPurchaseItem(name: string) {
+  if (confirm(`Are you sure you want to buy ${name}?`)) {
     try {
       loadingIndicator.start()
       shopDisabled.value = true
       await $fetch(`/api/users/me/purchases`, {
         method: 'POST',
-        body: { item_name: item.name },
+        body: { item_name: name },
       })
       await refresh()
     } catch (e) {
@@ -76,6 +76,7 @@ async function onTreeUpdated() {
       :supported-region="shop.is_region_supported"
       :user-device="shop.user_device"
       @update="onTreeUpdated"
+      @purchase="onPurchaseItem"
     />
   </div>
 
@@ -93,7 +94,7 @@ async function onTreeUpdated() {
       <div>
         <UButton
           variant="subtle"
-          @click="onPurchaseItem(item)"
+          @click="onPurchaseItem(item.name)"
           :disabled="shopDisabled || shop.coins < item.cost"
           >Buy!</UButton
         >

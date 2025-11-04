@@ -82,7 +82,7 @@ declare interface SiegeTreeNode {
 declare interface SiegeTreeInitialNode extends SiegeTreeNode {
   shape: 'pill' | 'circle'
   size: 'large'
-  options: { id: string; title: string; description: string }[]
+  options?: { id: string; title: string; description: string }[]
   purchased?: true
 }
 
