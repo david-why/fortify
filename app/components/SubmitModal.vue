@@ -89,7 +89,7 @@ onMounted(async () => {
           :model-value="checkboxState"
           :items="checkboxItems"
         />
-        <div class="border-t border-gray-500 my-4" />
+        <HDivider />
         <div class="mb-1">
           <UCheckbox
             v-model="isUpdate"

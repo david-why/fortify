@@ -159,9 +159,9 @@ watch(chosenDevice, (value) => value && onChangeDevice(value))
     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
   >
     <UCard v-for="card in deviceUpgradeOptions">
-      <h2 class="text-xl font-semibold mb-2">
+      <h3 class="text-xl font-semibold mb-2">
         {{ card.title }} ({{ card.qtyText }})
-      </h2>
+      </h3>
       <p class="mb-2"><CoinIcon /> {{ card.cost }}</p>
       <p class="mb-4">{{ card.description }}</p>
       <div class="flex items-center gap-2">

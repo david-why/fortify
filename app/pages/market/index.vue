@@ -69,6 +69,10 @@ async function onTreeUpdated() {
     Current&nbsp; <CoinIcon />: {{ shop.coins }}
   </p>
 
+  <HDivider />
+
+  <h2 class="text-2xl font-bold mb-4">Device upgrades</h2>
+
   <div class="mb-4">
     <TechTree
       :tree="shop.tech_tree"
@@ -80,9 +84,13 @@ async function onTreeUpdated() {
     />
   </div>
 
+  <HDivider />
+
+  <h2 class="text-2xl font-bold mb-4">Other stuff</h2>
+
   <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
     <UCard v-for="item in displayItems" :key="item.id">
-      <h2 class="text-xl font-semibold mb-2">{{ item.name }}</h2>
+      <h3 class="text-xl font-semibold mb-2">{{ item.name }}</h3>
       <p class="mb-2 flex items-center gap-1"><CoinIcon /> {{ item.cost }}</p>
       <p class="mb-2">{{ item.description }}</p>
       <p class="text-sm mb-2" v-if="item.stock">
