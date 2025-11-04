@@ -100,6 +100,18 @@ export default defineEventHandler(async (event) => {
     }))
   )
 
+  // of course! the tech tree stuff "currentPurchases" and "purchased" keys
+  // are fake and i need to set them myself HAHHAHAHAHAHAHAHAHHAHA
+  for (const tree of Object.values(techTreeData) as SiegeTreeBase[]) {
+    for (const branchMap of Object.values(tree.branches)) {
+      for (const item of Object.values(branchMap)) {
+        const count = getPurchasedCount(item.title)
+        item.purchased = !!count
+        item.currentPurchases = count
+      }
+    }
+  }
+
   return {
     items: shopItems,
     coins,

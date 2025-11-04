@@ -73,11 +73,11 @@ const deviceUpgradeOptions = computed(() => {
     const currentPurchases = item.currentPurchases ?? (item.purchased ? 1 : 0)
     const disabled = !!(
       unsatisfiedReqs.length ||
-      (maxPurchases && (item.currentPurchases || 0) > maxPurchases)
+      (maxPurchases && (item.currentPurchases || 0) >= maxPurchases)
     )
     const limitText = maxPurchases
-      ? ` (${currentPurchases}/${maxPurchases})`
-      : null
+      ? `${currentPurchases}/${maxPurchases}`
+      : `${currentPurchases}`
     const reqText = unsatisfiedReqs.length
       ? `Requires ${unsatisfiedReqs.join(' & ')}`
       : ''
@@ -85,11 +85,31 @@ const deviceUpgradeOptions = computed(() => {
       title: item.title,
       cost: item.price,
       description: item.description,
-      limitText,
+      qtyText: limitText,
       reqText,
       disabled,
     }
   })
+})
+const currentGrant = computed(() => {
+  if (chosenDevice.value !== 'laptop_grant_base') {
+    return 0
+  }
+  let grant = 650
+  for (const item of Object.values(
+    techTree.laptop_grant.branches.laptop_grant_base!
+  )) {
+    const perItem =
+      {
+        '+$10 Grant': 10,
+        '+$50 Grant': 50,
+        '+$100 Grant': 100,
+      }[item.title] ?? 0
+    if (item.currentPurchases) {
+      grant += perItem * item.currentPurchases
+    }
+  }
+  return grant
 })
 
 const treeDisabled = ref(false)
@@ -132,14 +152,17 @@ watch(chosenDevice, (value) => value && onChangeDevice(value))
     :items="deviceTypeOptions"
     :disabled="treeDisabled || globalDisabled"
   />
+  <p class="mb-4" v-if="chosenDevice === 'laptop_grant_base'">
+    Current grant: ${{ currentGrant }}
+  </p>
   <div
     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
   >
     <UCard v-for="card in deviceUpgradeOptions">
       <h2 class="text-xl font-semibold mb-2">
-        {{ card.title }}{{ card.limitText }}
+        {{ card.title }} ({{ card.qtyText }})
       </h2>
-      <p class="mb-2"><CoinIcon/> {{ card.cost }}</p>
+      <p class="mb-2"><CoinIcon /> {{ card.cost }}</p>
       <p class="mb-4">{{ card.description }}</p>
       <div class="flex items-center gap-2">
         <UButton

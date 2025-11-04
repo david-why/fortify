@@ -10,6 +10,7 @@ Here are some versions of this website, in case you want to see what it looked l
 - Siege Week 9 submission (2025-11-03): [demo video](https://hc-cdn.hel1.your-objectstorage.com/s/v3/0222b1942f61b698f3b21a8ea860968c51cfc35b_fortify.mp4) | [link to this version](https://61fca41c.fortify-4k6.pages.dev)
 - Siege Week 10 submission (TBD): demo video | link to this version | features added:
   - Settings page
+  - Market page
 
 ## Features & TODO
 
@@ -24,10 +25,10 @@ Here are some versions of this website, in case you want to see what it looked l
 - [x] Great Hall
   - [x] Voting
   - [x] Vote again (when enabled)
-- [ ] Market
+- [x] Market
   - [ ] Item upgrades
-  - [ ] Cosmetics
-  - [ ] "Physical" items (quotes because `"physical": true` doesn't mean physical lol)
+  - [x] Cosmetics
+  - [x] "Physical" items (quotes because `"physical": true` doesn't mean physical lol)
 - [ ] Chambers
 - [ ] Stonemason reviews
 - [ ] Final reviews
