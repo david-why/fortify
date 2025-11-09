@@ -18,7 +18,7 @@ const tileColor = computed(() => {
       return 'var(--color-teal-500)'
     case 'finished':
       return `color-mix(in srgb, yellow ${
-        20 + (value.value / maxCoins) * 80
+        25 + (value.value / maxCoins) * 75
       }%, black 5%)`
   }
 })
@@ -34,7 +34,8 @@ const tileColor = computed(() => {
       <span
         >{{ project.name }} - {{ project.user.display_name }} ({{
           project.week_badge_text
-        }}, <ProjectStatus :project="{ ...project, value }" />)</span
+        }}, {{ project.hours }}h,
+        <ProjectStatus :project="{ ...project, value }" />)</span
       >
     </template>
   </UTooltip>
