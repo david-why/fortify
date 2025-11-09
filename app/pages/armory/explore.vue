@@ -17,12 +17,20 @@ const projects = computed(
       ...p,
       week: parseInt(p.week_badge_text.substring(5)),
       value: Number(p.coin_value),
+      efficiency: p.hours === 0 ? 0 : Number(p.coin_value) / p.hours,
     })) ?? []
 )
 
-const maxCoins = computed(() =>
+const maxValue = computed(() =>
   projects.value
-    .map((p) => Number(p.coin_value))
+    .map((p) => {
+      switch (colorAttr.value) {
+        case 'efficiency':
+          return p.efficiency
+        default:
+          return p.value
+      }
+    })
     .reduce((a, b) => Math.max(a, b), 0)
 )
 
@@ -31,6 +39,10 @@ const displayProjects = computed(() =>
     switch (sortBy.value) {
       case 'coins':
         return b.value - a.value
+      case 'user':
+        return a.user.id - b.user.id
+      case 'efficiency':
+        return b.efficiency - a.efficiency
       default:
         return b.id - a.id
     }
@@ -57,6 +69,8 @@ const displayGroups = computed(() => {
 const sortByItems = computed(() => [
   { label: 'Week', value: 'week' },
   { label: 'Coins gained', value: 'coins' },
+  { label: 'Efficiency', value: 'efficiency' },
+  { label: 'User ID', value: 'user' },
 ])
 const sortBy = ref('week')
 
@@ -65,18 +79,27 @@ const groupByItems = computed(() => [
   { label: 'Week', value: 'week' },
 ])
 const groupBy = ref('none')
+
+const colorAttrItems = computed(() => [
+  { label: 'Coins', value: 'coins' },
+  { label: 'Efficiency', value: 'efficiency' },
+])
+const colorAttr = ref('coins')
 </script>
 
 <template>
   <h1 class="text-3xl font-bold mb-4">Explore projects</h1>
 
-  <h2 class="text-2xl font-bold mb-2">Grid View Settings</h2>
+  <h2 class="text-lg font-bold mb-2">Grid View Settings</h2>
   <div class="mb-4 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
     <UFormField label="Sort by">
       <USelect v-model="sortBy" :items="sortByItems" class="w-full" />
     </UFormField>
     <UFormField label="Group by">
       <USelect v-model="groupBy" :items="groupByItems" class="w-full" />
+    </UFormField>
+    <UFormField label="Color by">
+      <USelect v-model="colorAttr" :items="colorAttrItems" class="w-full" />
     </UFormField>
   </div>
 
@@ -91,7 +114,11 @@ const groupBy = ref('none')
           v-for="project in group.projects"
           :key="project.id"
         >
-          <ExploreProject :project="project" :max-coins="maxCoins" />
+          <ExploreProject
+            :project="project"
+            :color-attr="colorAttr"
+            :max-value="maxValue"
+          />
         </li>
       </ul>
     </li>

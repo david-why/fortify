@@ -1,13 +1,26 @@
 <script setup lang="ts">
-const { project, maxCoins } = defineProps<{
+const props = defineProps<{
   project: APIProject
-  maxCoins: number
+  colorAttr?: string
+  maxValue: number
 }>()
 
-const value = computed(() => Number(project.coin_value))
+const value = computed(() => Number(props.project.coin_value))
+const efficiency = computed(() =>
+  props.project.hours ? value.value / props.project.hours : 0
+)
+
+const attrValue = computed(() => {
+  switch (props.colorAttr) {
+    case 'efficiency':
+      return efficiency.value
+    default:
+      return value.value
+  }
+})
 
 const tileColor = computed(() => {
-  switch (project.status) {
+  switch (props.project.status) {
     case 'building':
       return 'var(--color-gray-400)'
     case 'submitted':
@@ -18,7 +31,7 @@ const tileColor = computed(() => {
       return 'var(--color-teal-500)'
     case 'finished':
       return `color-mix(in srgb, yellow ${
-        25 + (value.value / maxCoins) * 75
+        25 + (attrValue.value / props.maxValue) * 75
       }%, black 5%)`
   }
 })
