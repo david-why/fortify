@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { ExploreProjectModal } from '#components'
+
+const overlay = useOverlay()
+
+const modal = overlay.create(ExploreProjectModal)
+
 const props = defineProps<{
   project: APIProject
   colorAttr?: string
@@ -35,12 +41,19 @@ const tileColor = computed(() => {
       }%, black 5%)`
   }
 })
+
+function openModal() {
+  modal.open({
+    id: props.project.id,
+    title: `${props.project.name} - ${props.project.user.display_name}`,
+  })
+}
 </script>
 
 <template>
   <UTooltip>
-    <ULink :href="`/armory/${project.id}`">
-      <ColoredSquare class="text-3xl" :color="tileColor" />
+    <ULink @click="openModal">
+      <ColoredSquare class="text-3xl cursor-pointer" :color="tileColor" />
     </ULink>
 
     <template #content>
