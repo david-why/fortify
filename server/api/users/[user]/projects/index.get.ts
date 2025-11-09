@@ -7,12 +7,9 @@ export default defineEventHandler(async (event) => {
 
   if (userID === 'me') {
     // fetch from armory
-    const [htmlText, apiProjects] = await Promise.all([
-      fetchArmoryProjects(event),
-      fetchAPIProjects(),
-    ])
+    const htmlText = await fetchArmoryProjects(event)
 
-    const projects: UserProject[] = []
+    const armoryProjects: Omit<UserProject, 'description'>[] = []
 
     const $ = load(htmlText)
     for (const project of $('.projects-grid').find('article')) {
@@ -21,9 +18,6 @@ export default defineEventHandler(async (event) => {
       const week = parseInt(
         $(project).find('.project-badge').text().trim().split(' ')[1]
       )
-      // olive :(
-      const description =
-        apiProjects.find((p) => p.id === id)?.description ?? ''
       const [repo, demo] = $(project)
         .find('.project-links a')
         .map(function () {
@@ -52,8 +46,16 @@ export default defineEventHandler(async (event) => {
       } else {
         status = 'building' // uhhh??
       }
-      projects.push({ id, title, week, description, repo, demo, status, value })
+      armoryProjects.push({ id, title, week, repo, demo, status, value })
     }
+
+    const apiProjects = await Promise.all(
+      armoryProjects.map((p) => fetchAPIProject(p.id))
+    )
+    const projects: UserProject[] = armoryProjects.map((p, i) => ({
+      ...p,
+      description: apiProjects[i]!.description,
+    }))
 
     const canCreate = !$('.projects-actions a').hasClass('is-disabled')
 
@@ -77,10 +79,10 @@ async function fetchArmoryProjects(event: H3Event) {
   return htmlText
 }
 
-async function fetchAPIProjects() {
+async function fetchAPIProject(id: number) {
   const data = await fetch(
-    'https://siege.hackclub.com/api/public-beta/projects'
+    `https://siege.hackclub.com/api/public-beta/project/${id}`
   ).then((r) => r.json())
 
-  return data.projects as APIProject[]
+  return data as APIProject
 }
