@@ -8,9 +8,10 @@ Here are some versions of this website, in case you want to see what it looked l
 
 - Current version: [link](https://fortify.davidwhy.me)
 - Siege Week 9 submission (2025-11-03): [demo video](https://hc-cdn.hel1.your-objectstorage.com/s/v3/0222b1942f61b698f3b21a8ea860968c51cfc35b_fortify.mp4) | [link to this version](https://61fca41c.fortify-4k6.pages.dev)
-- Siege Week 10 submission (TBD): demo video | link to this version | features added:
+- Siege Week 10 submission (TBD): demo video | [link to first commit](https://github.com/david-why/fortify/commit/8a48731037a9953742082368ffc5e2ca0a1d075c) | link to this version | features added:
   - Settings page
-  - Market page
+  - Market page (device upgrades & other stuff)
+  - Armory explore page, with a **_GRID_** view!
 
 ## Features & TODO
 
@@ -21,14 +22,14 @@ Here are some versions of this website, in case you want to see what it looked l
   - [x] View projects
   - [x] Create project
   - [x] Edit & delete projects
-  - [ ] Explore others' projects
+  - [x] Explore others' projects
 - [x] Great Hall
   - [x] Voting
   - [x] Vote again (when enabled)
 - [x] Market
-  - [ ] Item upgrades
+  - [x] Item upgrades
   - [x] Cosmetics
-  - [x] "Physical" items (quotes because `"physical": true` doesn't mean physical lol)
+  - [x] "Physical" items
 - [ ] Chambers
 - [ ] Stonemason reviews
 - [ ] Final reviews

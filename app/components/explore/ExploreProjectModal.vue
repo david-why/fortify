@@ -8,7 +8,18 @@ defineProps<{
 <template>
   <UModal fullscreen :title="title">
     <template #body>
-      <ProjectDetailView class="max-w-lg" :id="id" />
+      <ProjectDetailView :id="id" />
+    </template>
+
+    <template #footer="{ close }">
+      <UButton
+        class="cursor-pointer"
+        icon="i-material-symbols-swords"
+        variant="subtle"
+        :href="`/armory/${id}`"
+        @click.passive="close"
+        >Open in armory</UButton
+      >
     </template>
   </UModal>
 </template>
