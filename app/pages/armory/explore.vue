@@ -1,5 +1,16 @@
 <script setup lang="ts">
-const { data: rawProjects } = await useFetch('/api/projects')
+const toast = useToast()
+
+const { data: rawProjects, error } = await useFetch('/api/projects')
+if (error.value) {
+  toast.add({
+    color: 'error',
+    title: 'Failed to get all projects',
+    description: error.value.message,
+  })
+  throw navigateTo('/')
+}
+
 const projects = computed(
   () =>
     rawProjects.value?.map((p) => ({

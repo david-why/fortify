@@ -1,12 +1,17 @@
 <script setup lang="ts">
 const settings = useFortifySettings()
+const toast = useToast()
 
 const { data, error } = await useFetch('/api/users/me/projects')
 if (error.value) {
   if (error.value.statusCode === 401) {
     throw navigateTo('/login')
   }
-  console.error(error.value, error.value.message)
+  toast.add({
+    color: 'error',
+    title: 'Failed to get your projects',
+    description: error.value.message,
+  })
   throw navigateTo('/')
 }
 
@@ -29,7 +34,9 @@ async function onClickProject(project: UserProject) {
     <UButton v-if="canCreate" href="/armory/new" variant="subtle"
       >Create project</UButton
     >
-    <UButton href="/armory/explore" color="neutral" variant="subtle">Explore projects</UButton>
+    <UButton href="/armory/explore" color="neutral" variant="subtle"
+      >Explore projects</UButton
+    >
   </div>
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 align-stretch">
     <ULink

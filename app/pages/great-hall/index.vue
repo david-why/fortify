@@ -14,6 +14,11 @@ if (error.value) {
   if (error.value.statusCode === 401) {
     throw navigateTo('/login')
   }
+  toast.add({
+    color: 'error',
+    title: 'Failed to get ballot data',
+    description: error.value.message,
+  })
   throw navigateTo('/')
 }
 

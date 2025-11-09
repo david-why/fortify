@@ -7,7 +7,7 @@ if (error.value) {
   toast.add({
     color: 'error',
     title: 'Failed to get shop data',
-    description: 'Please try again later',
+    description: error.value.message,
   })
   throw navigateTo('/')
 }

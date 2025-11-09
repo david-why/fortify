@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { FetchError } from 'ofetch'
-import { canDestroyProject, canEditProject } from '~~/shared/validation'
+import { canEditProject } from '~~/shared/validation'
 
 const settings = useFortifySettings()
 const route = useRoute()
 const loadingIndicator = useLoadingIndicator()
+const toast = useToast()
 const { id } = route.params as { id: string }
 
 const {
@@ -13,6 +14,11 @@ const {
   refresh: refreshData,
 } = await useFetch(`/api/projects/${id}`)
 if (error.value || !data.value) {
+  toast.add({
+    color: 'error',
+    title: 'Failed to fetch project',
+    description: error.value?.message ?? 'Please try again later',
+  })
   throw navigateTo('/armory')
 }
 

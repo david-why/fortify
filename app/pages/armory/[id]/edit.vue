@@ -5,10 +5,16 @@ import { FetchError } from 'ofetch'
 
 const route = useRoute()
 const loadingIndicator = useLoadingIndicator()
+const toast = useToast()
 const { id } = route.params as { id: string }
 
 const { data, error } = await useFetch(`/api/projects/${id}`)
 if (error.value || !data.value || !canEditProject(data.value)) {
+  toast.add({
+    color: 'error',
+    title: 'Failed to edit project',
+    description: error.value?.message ?? 'Please try again later',
+  })
   throw navigateTo(`/armory/${id}`)
 }
 
