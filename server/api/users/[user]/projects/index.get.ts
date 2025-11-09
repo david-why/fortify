@@ -1,21 +1,16 @@
-import { getSessionCookie } from '~~/server/utils/user'
 import { load } from 'cheerio'
+import type { H3Event } from 'h3'
+import { getSessionCookie } from '~~/server/utils/user'
 
 export default defineEventHandler(async (event) => {
   const userID = getRouterParam(event, 'user')!
 
   if (userID === 'me') {
     // fetch from armory
-    const res = await fetch('https://siege.hackclub.com/armory', {
-      headers: {
-        Cookie: `_siege_session=${getSessionCookie(event)}`,
-      },
-      redirect: 'manual',
-    })
-    if (res.status !== 200) {
-      throw new Error('Failed to get armory data')
-    }
-    const htmlText = await res.text()
+    const [htmlText, apiProjects] = await Promise.all([
+      fetchArmoryProjects(event),
+      fetchAPIProjects(),
+    ])
 
     const projects: UserProject[] = []
 
@@ -26,7 +21,9 @@ export default defineEventHandler(async (event) => {
       const week = parseInt(
         $(project).find('.project-badge').text().trim().split(' ')[1]
       )
-      const description = $(project).find('.project-description').text().trim()
+      // olive :(
+      const description =
+        apiProjects.find((p) => p.id === id)?.description ?? ''
       const [repo, demo] = $(project)
         .find('.project-links a')
         .map(function () {
@@ -65,3 +62,25 @@ export default defineEventHandler(async (event) => {
     // fetch from api
   }
 })
+
+async function fetchArmoryProjects(event: H3Event) {
+  const res = await fetch('https://siege.hackclub.com/armory', {
+    headers: {
+      Cookie: `_siege_session=${getSessionCookie(event)}`,
+    },
+    redirect: 'manual',
+  })
+  if (res.status !== 200) {
+    throw new Error('Failed to get armory data')
+  }
+  const htmlText = await res.text()
+  return htmlText
+}
+
+async function fetchAPIProjects() {
+  const data = await fetch(
+    'https://siege.hackclub.com/api/public-beta/projects'
+  ).then((r) => r.json())
+
+  return data.projects as APIProject[]
+}
