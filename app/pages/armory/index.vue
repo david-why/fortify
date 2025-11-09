@@ -25,8 +25,11 @@ async function onClickProject(project: UserProject) {
 
 <template>
   <h1 class="text-3xl font-bold mb-4">Your projects</h1>
-  <div class="mb-4" v-if="canCreate">
-    <UButton href="/armory/new" variant="subtle">Create project</UButton>
+  <div class="flex gap-4 mb-4">
+    <UButton v-if="canCreate" href="/armory/new" variant="subtle"
+      >Create project</UButton
+    >
+    <UButton href="/armory/explore" color="neutral" variant="subtle">Explore projects</UButton>
   </div>
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 align-stretch">
     <ULink
