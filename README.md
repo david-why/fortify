@@ -4,14 +4,14 @@
 
 ## Versions
 
-Here are some versions of this website, in case you want to see what it looked like
+Here are some versions of this website, in case you want to see what it looked like in the past.
 
-- Current version: [link](https://fortify.davidwhy.me)
 - Siege Week 9 submission (2025-11-03): [demo video](https://hc-cdn.hel1.your-objectstorage.com/s/v3/0222b1942f61b698f3b21a8ea860968c51cfc35b_fortify.mp4) | [link to this version](https://61fca41c.fortify-4k6.pages.dev)
-- Siege Week 10 submission (TBD): demo video | [link to first commit](https://github.com/david-why/fortify/commit/8a48731037a9953742082368ffc5e2ca0a1d075c) | link to this version | features added:
+- Siege Week 10 submission (2025-11-09): [demo video](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a8555b27d4aded3d31d5f65b9e2438e8f1e85cca_fortify2.mp4) | [link to first commit this week](https://github.com/david-why/fortify/commit/8a48731037a9953742082368ffc5e2ca0a1d075c) | [link to this version](https://53b1a3a8.fortify-4k6.pages.dev) | features added:
   - Settings page
   - Market page (device upgrades & other stuff)
   - Armory explore page, with a **_GRID_** view!
+- Latest version: [link](https://fortify.davidwhy.me)
 
 ## Features & TODO
 
