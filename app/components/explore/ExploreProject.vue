@@ -6,13 +6,6 @@ const { project, maxCoins } = defineProps<{
 
 const value = computed(() => Number(project.coin_value))
 
-const project2 = computed(() => ({
-  ...project,
-  value: value.value,
-}))
-
-const week = computed(() => parseInt(project.week_badge_text.substring(5)))
-
 const tileColor = computed(() => {
   switch (project.status) {
     case 'building':
@@ -25,24 +18,24 @@ const tileColor = computed(() => {
       return 'var(--color-teal-500)'
     case 'finished':
       return `color-mix(in srgb, yellow ${
-        10 + (value.value / maxCoins) * 90
+        20 + (value.value / maxCoins) * 80
       }%, black 5%)`
   }
 })
 </script>
 
 <template>
-  <UModal>
-    <UTooltip>
+  <UTooltip>
+    <ULink :href="`/armory/${project.id}`">
       <ColoredSquare class="text-3xl" :color="tileColor" />
-    </UTooltip>
+    </ULink>
 
-    <template #title>
-      <span>{{ project.name }} - {{ project.week_badge_text }}</span>
+    <template #content>
+      <span
+        >{{ project.name }} - {{ project.user.display_name }} ({{
+          project.week_badge_text
+        }}, <ProjectStatus :project="{ ...project, value }" />)</span
+      >
     </template>
-
-    <template #body>
-      <p>Status: <ProjectStatus :project="project2" /></p>
-    </template>
-  </UModal>
+  </UTooltip>
 </template>
