@@ -32,7 +32,18 @@ export default defineEventHandler(async (event) => {
       .map(function () {
         return this.attribs.href
       })
-    projects.push({ id, title, week, description, repo, demo })
+    const userName = $(card).find('.project-owner').text().trim().substring(3)
+    const timeText = $(card).find('.hackatime-value').text()
+    projects.push({
+      id,
+      title,
+      week,
+      description,
+      repo,
+      demo,
+      user: { display_name: userName },
+      time_text: timeText,
+    })
   }
 
   return projects

@@ -135,6 +135,8 @@ declare type UserProject = Omit<
 declare type StonemasonProject = Omit<UserProject, 'value' | 'status'> & {
   repo: string
   demo: string
+  user: { display_name: string }
+  time_text: string
 }
 
 declare type SiegeVoteUser = Pick<APIUser, 'id' | 'name'> & {
