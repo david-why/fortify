@@ -16,7 +16,7 @@ if (error.value) {
 }
 
 const projects = computed(() =>
-  data.value?.projects.toSorted((a, b) => a.week - b.week)
+  data.value?.projects.toSorted((a, b) => b.week - a.week)
 )
 const canCreate = computed(() => data.value?.canCreate)
 
