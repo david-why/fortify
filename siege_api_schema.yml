@@ -10,19 +10,115 @@ servers:
 tags:
   - name: public
     description: Public API
+  - name: armory
+    description: Project-related endpoints
+security:
+  - cookie: []
 
 paths:
   /api/public-beta/projects:
     get:
+      security: []
       tags: [public]
       description: Retrieve all projects
       responses:
-        200:
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/APIProject'
+  /armory:
+    post:
+      tags: [armory]
+      description: Create a new project
+      requestBody:
+        description: Project to create
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateProjectRequest'
+      responses:
+        '302':
+          description: Redirect to project page
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+  /armory/{id}:
+    delete:
+      tags: [armory]
+      description: Delete a project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of project to delete
+          schema:
+            type: integer
+        - name: x-csrf-token
+          in: header
+          required: true
+          description: CSRF token
+          schema:
+            type: string
+      responses:
+        '204':
+          description: OK
+    put:
+      tags: [armory]
+      description: Update a project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of project to delete
+          schema:
+            type: integer
+        - name: x-csrf-token
+          in: header
+          required: true
+          description: CSRF token
+          schema:
+            type: string
+      requestBody:
+        description: Edited project
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EditProjectRequest'
+  /armory/{id}/submit:
+    post:
+      tags: [armory]
+      description: Submit a project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of project to submit
+          schema:
+            type: integer
+        - name: x-csrf-token
+          in: header
+          required: true
+          description: CSRF token
+          schema:
+            type: string
+      requestBody:
+        description: Update status
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_update:
+                  type: boolean
+              required:
+                - is_update
+      responses:
+        '200':
+          description: OK
 
 components:
   schemas:
@@ -85,3 +181,78 @@ components:
         - coin_value
         - is_update
         - hours
+    CreateProjectRequest:
+      allOf:
+        - $ref: '#/components/schemas/AuthenticityToken'
+        - type: object
+          properties:
+            remove_screenshot:
+              type: boolean
+            'project[name]':
+              type: string
+            'project[description]':
+              type: string
+            'project[repo_url]':
+              type: string
+            'project[demo_url]':
+              type: string
+            'project[screenshot]':
+              type: string
+              format: binary
+            'project[hackatime_projects][]':
+              type: array
+              items:
+                type: string
+          required:
+            - remove_screenshot
+            - 'project[name]'
+            - 'project[description]'
+            - 'project[repo_url]'
+            - 'project[demo_url]'
+            - 'project[hackatime_projects][]'
+    EditProjectRequest:
+      allOf:
+        - $ref: '#/components/schemas/AuthenticityToken'
+        - type: object
+          properties:
+            _method:
+              type: string
+              enum:
+                - patch
+            remove_screenshot:
+              type: boolean
+            'project[name]':
+              type: string
+            'project[description]':
+              type: string
+            'project[repo_url]':
+              type: string
+            'project[demo_url]':
+              type: string
+            'project[screenshot]':
+              type: string
+              format: binary
+            'project[hackatime_projects][]':
+              type: array
+              items:
+                type: string
+          required:
+            - _method
+            - remove_screenshot
+            - 'project[name]'
+            - 'project[description]'
+            - 'project[repo_url]'
+            - 'project[demo_url]'
+            - 'project[hackatime_projects][]'
+    AuthenticityToken:
+      type: object
+      properties:
+        authenticity_token:
+          type: string
+      required:
+        - authenticity_token
+  securitySchemes:
+    cookie:
+      type: apiKey
+      name: _siege_session
+      in: cookie
