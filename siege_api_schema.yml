@@ -12,6 +12,8 @@ tags:
     description: Public API
   - name: armory
     description: Project-related endpoints
+  - name: shop
+    description: Shop-related endpoints
 security:
   - cookie: []
 
@@ -119,6 +121,24 @@ paths:
       responses:
         '200':
           description: OK
+  /market/tech_tree_data:
+    get:
+      tags: [shop]
+      description: Fetch tech tree data
+      parameters:
+        - name: x-csrf-token
+          in: header
+          required: true
+          description: CSRF token
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TechTree'
 
 components:
   schemas:
@@ -251,6 +271,81 @@ components:
           type: string
       required:
         - authenticity_token
+    TechTree:
+      type: object
+      properties:
+        laptop:
+          $ref: '#/components/schemas/TechTreeBase'
+        laptop_grant:
+          $ref: '#/components/schemas/TechTreeBase'
+        tablet:
+          $ref: '#/components/schemas/TechTreeBase'
+      required: [laptop, laptop_grant, tablet]
+    TechTreeBase:
+      type: object
+      properties:
+        type:
+          type: string
+        initialNode:
+          $ref: '#/components/schemas/TechTreeInitialNode'
+        branches:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              $ref: '#/components/schemas/TechTreeNode'
+      required: [type, initialNode, branches]
+    TechTreeNode:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        price:
+          type: integer
+        description:
+          type: string
+        maxPurchases:
+          type: number
+        currentPurchases:
+          type: number
+        purchased:
+          type: boolean
+          description: Seems to always be false
+        requires:
+          type: string
+      required: [id, title, price, description, purchased]
+    TechTreeInitialNode:
+      allOf:
+        - $ref: '#/components/schemas/TechTreeNode'
+        - type: object
+          properties:
+            shape:
+              type: string
+              enum:
+                - pill
+                - circle
+            size:
+              type: string
+              enum:
+                - large
+            options:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  description:
+                    type: string
+            purchased:
+              type: boolean
+              enum:
+                - true
+          required: [shape, size]
   securitySchemes:
     cookie:
       type: apiKey
