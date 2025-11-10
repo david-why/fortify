@@ -132,6 +132,11 @@ declare type UserProject = Omit<
   'screenshot' | 'hours' | 'is_self' | 'hackatime_projects'
 >
 
+declare type StonemasonProject = Omit<UserProject, 'value' | 'status'> & {
+  repo: string
+  demo: string
+}
+
 declare type SiegeVoteUser = Pick<APIUser, 'id' | 'name'> & {
   meeple: { color: string }
 }
