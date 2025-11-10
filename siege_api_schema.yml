@@ -1,0 +1,87 @@
+openapi: 3.1.0
+info:
+  title: Siege APIs
+  version: 2025.11.10
+  description: |-
+    These are the Siege APIs I found by inspecting network requests. This is
+    NOT an official documentation. Subject to change at any time.
+servers:
+  - url: https://siege.hackclub.com
+tags:
+  - name: public
+    description: Public API
+
+paths:
+  /api/public-beta/projects:
+    get:
+      tags: [public]
+      description: Retrieve all projects
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIProject'
+
+components:
+  schemas:
+    APIProject:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum:
+            - building
+            - submitted
+            - pending_voting
+            - waiting_for_review
+            - finished
+        repo_url:
+          type: string
+        demo_url:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            display_name:
+              type: string
+          required: [id, name, display_name]
+        week_badge_text:
+          type: string
+        coin_value:
+          type: string
+        is_update:
+          type: boolean
+        hours:
+          type: number
+      required:
+        - id
+        - name
+        - description
+        - status
+        - repo_url
+        - demo_url
+        - created_at
+        - updated_at
+        - user
+        - week_badge_text
+        - coin_value
+        - is_update
+        - hours
