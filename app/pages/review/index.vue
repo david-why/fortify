@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const toast = useToast()
-
-const { data: projects, error } = useFetch('/api/stonemason/projects')
+const { data: projects, error } = await useFetch('/api/stonemason/projects')
 if (error.value) {
   const message =
     error.value.statusCode === 403
@@ -19,7 +18,10 @@ if (error.value) {
 <template>
   <h1 class="text-3xl font-bold mb-4">Project Review</h1>
 
-  <ul v-if="projects?.length" class="grid grid-cols-1 lg:grid-cols-2 gap-4 align-stretch">
+  <ul
+    v-if="projects?.length"
+    class="grid grid-cols-1 lg:grid-cols-2 gap-4 align-stretch"
+  >
     <li v-for="project in projects" :key="project.id">
       <ULink class="text-default" :href="`/review/projects/${project.id}`">
         <UCard class="h-full" variant="subtle">
