@@ -90,6 +90,14 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/EditProjectRequest'
+      responses:
+        '302':
+          description: Redirect to project page
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
   /armory/{id}/submit:
     post:
       tags: [armory]
