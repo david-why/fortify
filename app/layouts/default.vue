@@ -1,40 +1,45 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-const route = useRoute()
+const settings = useFortifySettings()
 
-const navItems = computed<NavigationMenuItem[]>(() => [
-  {
-    label: 'Home',
-    to: '/',
-    icon: 'i-material-symbols-home-outline',
-    active: route.path === '/',
-  },
-  {
-    label: 'Armory',
-    to: '/armory',
-    icon: 'i-material-symbols-swords',
-    active: route.path === '/armory',
-  },
-  {
-    label: 'Great Hall',
-    to: '/great-hall',
-    icon: 'i-material-symbols-account-balance',
-    active: route.path === '/great-hall',
-  },
-  {
-    label: 'Market',
-    to: '/market',
-    icon: 'i-material-symbols-shopping-bag',
-    active: route.path === '/market',
-  },
-  {
+const navItems = computed<NavigationMenuItem[]>(() => {
+  const items = [
+    {
+      label: 'Home',
+      to: '/',
+      icon: 'i-material-symbols-home-outline',
+    },
+    {
+      label: 'Armory',
+      to: '/armory',
+      icon: 'i-material-symbols-swords',
+    },
+    {
+      label: 'Great Hall',
+      to: '/great-hall',
+      icon: 'i-material-symbols-account-balance',
+    },
+    {
+      label: 'Market',
+      to: '/market',
+      icon: 'i-material-symbols-shopping-bag',
+    },
+  ]
+  if (settings.value.showStonemason) {
+    items.push({
+      label: 'Stonemason',
+      to: '/review',
+      icon: 'i-material-symbols-castle',
+    })
+  }
+  items.push({
     label: 'Settings',
     to: '/settings',
     icon: 'i-material-symbols-settings',
-    active: route.path === '/settings',
-  },
-])
+  })
+  return items
+})
 </script>
 
 <template>

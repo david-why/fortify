@@ -19,7 +19,7 @@ if (error.value) {
 <template>
   <h1 class="text-3xl font-bold mb-4">Project Review</h1>
 
-  <ul class="grid grid-cols-1 lg:grid-cols-2 gap-4 align-stretch">
+  <ul v-if="projects?.length" class="grid grid-cols-1 lg:grid-cols-2 gap-4 align-stretch">
     <li v-for="project in projects" :key="project.id">
       <ULink class="text-default" :href="`/review/projects/${project.id}`">
         <UCard class="h-full" variant="subtle">
@@ -51,4 +51,5 @@ if (error.value) {
       </ULink>
     </li>
   </ul>
+  <p v-else>No projects in queue. Hooray!</p>
 </template>

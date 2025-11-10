@@ -132,11 +132,16 @@ declare type UserProject = Omit<
   'screenshot' | 'hours' | 'is_self' | 'hackatime_projects'
 >
 
-declare type StonemasonProject = Omit<UserProject, 'value' | 'status'> & {
+declare type StonemasonProjectItem = Omit<UserProject, 'value' | 'status'> & {
   repo: string
   demo: string
   user: { display_name: string }
   time_text: string
+}
+
+declare interface StonemasonDetailProject extends APIProject {
+  hackatime_projects: string[]
+  status_date: string // human-readable, in... Eastern Time???
 }
 
 declare type SiegeVoteUser = Pick<APIUser, 'id' | 'name'> & {

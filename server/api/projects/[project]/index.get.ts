@@ -1,4 +1,5 @@
 import { load } from 'cheerio'
+import { convertAPIProjectToProject } from '~~/shared/convert'
 import type { H3Event } from 'h3'
 
 export default defineEventHandler(async (event) => {
@@ -16,16 +17,8 @@ export default defineEventHandler(async (event) => {
   ])
 
   return {
-    id: apiData.id,
-    title: apiData.name,
-    week: parseInt(apiData.week_badge_text.split(' ')[1]),
-    description: apiData.description,
+    ...convertAPIProjectToProject(apiData),
     screenshot: scrapeData.screenshot,
-    repo: apiData.repo_url || null,
-    demo: apiData.demo_url || null,
-    status: apiData.status,
-    value: parseFloat(apiData.coin_value),
-    hours: apiData.hours,
     is_self: scrapeData.is_self,
     hackatime_projects: scrapeData.hackatime_projects,
   } satisfies Project

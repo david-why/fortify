@@ -65,3 +65,25 @@ export const setMainDeviceSchema = z.object({
 })
 
 export type SetMainDeviceSchema = z.infer<typeof setMainDeviceSchema>
+
+export const stonemasonReviewSchema = z.object({
+  review_status: z.enum([
+    'accept',
+    'accept_not_following_theme',
+    'reject',
+    'add_comment',
+  ]),
+  private_notes: z.string(),
+  stonemason_feedback: z.string(),
+  include_reviewer_handle: z.boolean(),
+  reviewer_video: z.nullable(
+    z
+      .string()
+      .refine(
+        (s) => s.startsWith('data:video/'),
+        'Reviewer video is not a video'
+      )
+  ),
+})
+
+export type StonemasonReviewSchema = z.infer<typeof stonemasonReviewSchema>

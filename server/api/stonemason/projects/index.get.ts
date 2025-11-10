@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   }
   const htmlText = await res.text()
 
-  const projects: StonemasonProject[] = []
+  const projects: StonemasonProjectItem[] = []
 
   const $ = load(htmlText)
   for (const card of $('.project-card')) {

@@ -6,9 +6,16 @@ const settings = useFortifySettings()
 const loadingIndicator = useLoadingIndicator()
 const toast = useToast()
 
-const { id, project: defaultProject } = defineProps<{
+const {
+  id,
+  project: defaultProject,
+  prefix = '',
+  statusPrefix = '',
+} = defineProps<{
   id: number
   project?: Project
+  prefix?: string
+  statusPrefix?: string
 }>()
 const emit = defineEmits<{
   error: []
@@ -93,6 +100,15 @@ async function editClicked() {
   await navigateTo(`/armory/${id}/edit`)
 }
 
+watch(
+  () => defaultProject,
+  (value) => {
+    if (value) {
+      project.value = value
+    }
+  }
+)
+
 onMounted(async () => {
   if (defaultProject) {
     project.value = defaultProject
@@ -104,9 +120,9 @@ onMounted(async () => {
 
 <template>
   <template v-if="project">
-    <h1 class="text-3xl font-bold mb-4">{{ project.title }}</h1>
+    <h1 class="text-3xl font-bold mb-4">{{ prefix }}{{ project.title }}</h1>
     <p class="text-sm mb-4">
-      Week {{ project.week }}, {{ project.hours }} hours,
+      {{ statusPrefix }}Week {{ project.week }}, {{ project.hours }} hours,
       <ProjectStatus :project="project" />
     </p>
     <div
