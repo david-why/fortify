@@ -11,6 +11,8 @@ Here are some versions of this website, in case you want to see what it looked l
   - Settings page
   - Market page (device upgrades & other stuff)
   - Armory explore page, with a **_GRID_** view!
+- Siege Week 11 submission (TBD): demo video | [link to first commit this week](https://github.com/david-why/fortify/commit/1d5fdacfc43fb70d784f523921e7e00f6ec7f19a) | link to this version | features added:
+  - TBD
 - Latest version: [link](https://fortify.davidwhy.me)
 
 ## Features & TODO
