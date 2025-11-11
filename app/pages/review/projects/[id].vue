@@ -60,6 +60,10 @@ async function onSubmitReview(event: FormSubmitEvent<StonemasonReviewSchema>) {
       method: 'POST',
       body: data,
     })
+    toast.add({
+      color: 'success',
+      title: 'Submitted review!'
+    })
     await refresh()
     loadingIndicator.finish()
   } catch (e) {

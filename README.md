@@ -13,6 +13,7 @@ Here are some versions of this website, in case you want to see what it looked l
   - Armory explore page, with a **_GRID_** view!
 - Siege Week 11 submission (TBD): demo video | [link to first commit this week](https://github.com/david-why/fortify/commit/1d5fdacfc43fb70d784f523921e7e00f6ec7f19a) | link to this version | features added:
   - WIP [API docs](./siege_api_schema.yml) for Siege's internal APIs. [Browse here](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/david-why/fortify/refs/heads/main/siege_api_schema.yml)
+  - Stonemason review page
 - Latest version: [link](https://fortify.davidwhy.me)
 
 ## Features & TODO
@@ -33,7 +34,7 @@ Here are some versions of this website, in case you want to see what it looked l
   - [x] Cosmetics
   - [x] "Physical" items
 - [ ] Chambers
-- [ ] Stonemason reviews
+- [x] Stonemason reviews
 - [ ] Final reviews
 - [x] Settings (Fortify-specific)
   - [x] Disabling jumpscares
