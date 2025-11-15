@@ -123,7 +123,7 @@ onMounted(() => {
         </ul>
       </div>
     </UCard>
-    <UCard variant="soft" class="bg-secondary/20">
+    <UCard variant="soft" class="bg-emerald-mix">
       <h2 class="text-xl font-semibold mb-4">Time leaderboard</h2>
       <ol>
         <li
@@ -136,9 +136,26 @@ onMounted(() => {
         </li>
       </ol>
     </UCard>
-    <UCard variant="soft" class="md:col-span-2 bg-primary/20">
+    <UCard variant="soft" class="md:col-span-2 bg-violet-mix">
       <h2 class="text-xl font-semibold mb-4">Your stats</h2>
       <canvas ref="chartCanvas"></canvas>
     </UCard>
   </div>
 </template>
+
+<style scoped>
+.bg-emerald-mix {
+  background-color: color-mix(
+    in oklab,
+    var(--color-emerald-500) 20%,
+    transparent
+  );
+}
+.bg-violet-mix {
+  background-color: color-mix(
+    in oklab,
+    var(--color-violet-500) 20%,
+    transparent
+  );
+}
+</style>

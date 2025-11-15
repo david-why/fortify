@@ -32,6 +32,8 @@ async function onSectionClicked(
       return navigateTo('/great-hall')
     case 'market':
       return navigateTo('/market')
+    case 'keep':
+      return navigateTo('/keep')
     default:
       return navigateTo('/dev')
   }
