@@ -6,9 +6,9 @@ const settings = useFortifySettings()
 const navItems = computed<NavigationMenuItem[]>(() => {
   const items = [
     {
-      label: 'Home',
-      to: '/',
-      icon: 'i-material-symbols-home-outline',
+      label: 'Space',
+      to: '/keep',
+      icon: 'i-material-symbols-rocket-launch',
     },
     {
       label: 'Armory',
