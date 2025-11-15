@@ -3,7 +3,7 @@ declare module 'h3' {
     cf: CfProperties
     cloudflare: {
       request: Request
-      env: {}
+      env: Cloudflare.Env
       context: ExecutionContext
     }
   }

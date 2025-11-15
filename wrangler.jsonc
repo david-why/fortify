@@ -6,4 +6,11 @@
     "compatibility_flags": [
         "nodejs_compat"
     ],
+    "d1_databases": [
+        {
+            "binding": "DB",
+            "database_name": "fortify",
+            "database_id": "d47b7a8d-7136-4afc-bffc-a1c54871920d"
+        }
+    ],
 }

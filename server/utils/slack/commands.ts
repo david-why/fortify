@@ -11,6 +11,13 @@ export async function handleSlackCommand(
   }
 }
 
+const commands = {
+  global: globalCommand,
+  g: globalCommand,
+  auth: authCommand,
+  a: authCommand,
+}
+
 async function handleMainCommand(
   h3Event: H3Event,
   event: SlackSlashCommandRequest
@@ -22,8 +29,8 @@ async function handleMainCommand(
     await respond(event.response_url, { text: INFO_TEXT })
   } else if (cmd === 'help' || cmd === 'h') {
     await respond(event.response_url, { text: HELP_TEXT })
-  } else if (cmd === 'global' || cmd === 'g') {
-    await globalCommand(h3Event, args, event)
+  } else if (cmd in commands) {
+    await commands[cmd as keyof typeof commands](h3Event, args, event)
   } else {
     await respond(event.response_url, { text: UNKNOWN_TEXT })
   }
@@ -76,6 +83,51 @@ async function globalCommand(
 :clock9: Total hours tracked across all weeks: ${totalHours}
 :clock12: Total submitted hours across all weeks: ${totalSubmittedHours}`,
   })
+}
+
+async function authCommand(
+  h3Event: H3Event,
+  args: string[],
+  event: SlackSlashCommandRequest
+) {
+  const user =
+    (await getUser(h3Event, event.user_id)) ||
+    (await createUser(h3Event, event.user_id))
+
+  if (args[0] === 'logout') {
+    if (!user.siege_session) {
+      await respond(event.response_url, {
+        text: `What do you mean "logout"? You've never logged in!!`,
+      })
+      return
+    }
+    user.siege_session = null
+    await upsertUser(h3Event, user)
+    await respond(event.response_url, {
+      text: `You have been logged out, and your cookie is forever deleted from the server.`,
+    })
+    return
+  }
+
+  if (args[0]) {
+    const cookie = args[0]
+    user.siege_session = cookie
+    await upsertUser(h3Event, user)
+    await respond(event.response_url, {
+      text: `You are now logged in! Your cookie has been stored on the server. If you want to log out and permanently delete the cookie, run \`${MAIN_COMMAND} auth logout\`.`,
+    })
+    return
+  }
+
+  if (!user?.siege_session) {
+    await respond(event.response_url, {
+      text: `You are not logged in. Please run \`${MAIN_COMMAND} auth <_siege_session>\` with your _siege_session cookie value to login.`,
+    })
+  } else {
+    await respond(event.response_url, {
+      text: `You are logged in. If you want to log out, please run \`${MAIN_COMMAND} auth logout\`.`,
+    })
+  }
 }
 
 // constants
