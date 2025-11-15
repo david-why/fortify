@@ -2,6 +2,17 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxt/eslint', '@nuxt/ui'],
-  css: ['~/assets/css/main.css']
+  modules: ['nitro-cloudflare-dev', '@nuxt/eslint', '@nuxt/ui'],
+  css: ['~/assets/css/main.css'],
+  runtimeConfig: {
+    slackVerificationToken: '',
+  },
+  devServer: {
+    port: 39867,
+  },
+  vite: {
+    server: {
+      allowedHosts: true,
+    },
+  },
 })
