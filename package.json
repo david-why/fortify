@@ -19,6 +19,7 @@
     "chart.js": "^4.5.1",
     "cheerio": "^1.1.2",
     "eslint": "^9.0.0",
+    "luxon": "^3.7.2",
     "nitro-cloudflare-dev": "^0.2.2",
     "nuxt": "^4.2.0",
     "vue": "^3.5.22",
@@ -26,6 +27,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@types/luxon": "^3.7.1",
     "@types/node": "^24.9.1",
     "wrangler": "^4.47.0"
   }
