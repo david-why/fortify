@@ -15,7 +15,7 @@ Here are some versions of this website, in case you want to see what it looked l
   - WIP [API docs](./siege_api_schema.yml) for Siege's internal APIs. [Browse here](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/david-why/fortify/refs/heads/main/siege_api_schema.yml)
   - Stonemason review page
   - My Space page, analogous to the Siege Keep page
-  - The @Fortify bot, which lets you manage Siege projects right from Slack! Try the `/siege-fortify` command from any channel!
+  - The @Fortify bot, which lets you view and edit Siege projects right from Slack! Try the `/siege-fortify` command from any channel!
 - Latest version: [link](https://fortify.davidwhy.me)
 
 ## Features & TODO

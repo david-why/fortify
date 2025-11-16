@@ -10,12 +10,14 @@ Use \`${SLACK_MAIN_COMMAND} help\` to see what I can do!`
 
 export const SLACK_HELP_TEXT = `\
 :siege-castle: All subcommands:
+
 No auth required:
 - \`global\`, \`g\`: Retrieves the total time tracked and submitted, this week and across all weeks.
 - \`auth\`: Logs in or out with your _siege_session token.
 - \`info\`, \`i\`: Show the info text.
 - \`help\`, \`h\`: Show this help text.
-_siege_session cookie required:
+
+Authentication (with \`${SLACK_MAIN_COMMAND} auth\`) required:
 - \`armory\`, \`a\`: Views your projects.`
 
 export const SLACK_UNKNOWN_TEXT = `Command not found... :( Try \`${SLACK_MAIN_COMMAND} help\` for a list of subcommands!`
