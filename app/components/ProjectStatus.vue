@@ -5,6 +5,7 @@ defineProps<{
 </script>
 
 <template>
+  <!-- !! keep in sync with server/utils/slack/formatting.ts !! -->
   <span v-if="project.status === 'building'">Building</span>
   <span v-else-if="project.status === 'pending_voting'">Waiting for votes</span>
   <span v-else-if="project.status === 'waiting_for_review'"

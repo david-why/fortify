@@ -1,4 +1,5 @@
 import type { H3Event } from 'h3'
+import type { KnownBlock } from '@slack/types'
 
 const MAIN_COMMAND = '/siege-fortify'
 
@@ -15,7 +16,8 @@ const commands = {
   global: globalCommand,
   g: globalCommand,
   auth: authCommand,
-  a: authCommand,
+  armory: armoryCommand,
+  a: armoryCommand,
 }
 
 async function handleMainCommand(
@@ -130,6 +132,92 @@ async function authCommand(
   }
 }
 
+async function armoryCommand(
+  h3Event: H3Event,
+  args: string[],
+  event: SlackSlashCommandRequest
+) {
+  const user = await getUser(h3Event, event.user_id)
+  if (!user?.siege_session) {
+    await respond(event.response_url, { text: NOT_LOGGED_IN_TEXT })
+    return
+  }
+  const projects = (await $fetch(`/api/users/me/projects`, {
+    headers: {
+      Cookie: `_siege_session=${user.siege_session}`,
+    },
+  }))!
+
+  const projectBlocks: KnownBlock[] = projects.projects
+    .toSorted((a, b) => a.week - b.week)
+    .map((p) => ({
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `*${p.title}* - Week ${p.week}, ${formatProjectStatusSlack(p)}`,
+      },
+      accessory: {
+        type: 'button',
+        text: {
+          type: 'plain_text',
+          text: 'View',
+          emoji: true,
+        },
+        value: String(p.id),
+        action_id: 'armory-project-details',
+      },
+    }))
+  if (!projectBlocks.length) {
+    projectBlocks.push({
+      type: 'section',
+      text: {
+        type: 'plain_text',
+        text: 'No projects yet. Create one with the button below!',
+      },
+    })
+  }
+
+  const createProjectBlocks: KnownBlock[] = projects.canCreate
+    ? [
+        {
+          type: 'divider',
+        },
+        {
+          type: 'actions',
+          elements: [
+            {
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: ':heavy_plus_sign: Create project',
+                emoji: true,
+              },
+              action_id: 'create-project',
+            },
+          ],
+        },
+      ]
+    : []
+
+  await respond(event.response_url, {
+    blocks: [
+      {
+        type: 'header',
+        text: {
+          type: 'plain_text',
+          text: ':siege-castle: Your projects',
+          emoji: true,
+        },
+      },
+      {
+        type: 'divider',
+      },
+      ...projectBlocks,
+      ...createProjectBlocks,
+    ] satisfies KnownBlock[],
+  })
+}
+
 // constants
 
 const INFO_TEXT = `\
@@ -142,8 +230,14 @@ Use \`${MAIN_COMMAND} help\` to see what I can do!`
 
 const HELP_TEXT = `\
 :siege-castle: All subcommands:
+No auth required:
 - \`global\`, \`g\`: Retrieves the total time tracked and submitted, this week and across all weeks.
+- \`auth\`: Logs in or out with your _siege_session token.
 - \`info\`, \`i\`: Show the info text.
-- \`help\`, \`h\`: Show this help text.`
+- \`help\`, \`h\`: Show this help text.
+_siege_session cookie required:
+- \`armory\`, \`a\`: Views your projects.`
 
 const UNKNOWN_TEXT = `Command not found... :( Try \`${MAIN_COMMAND} help\` for a list of subcommands!`
+
+const NOT_LOGGED_IN_TEXT = `You are not logged in! Please use \`${MAIN_COMMAND} auth <_siege_session>\` to log in with your _siege_session cookie.`
