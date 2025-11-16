@@ -8,14 +8,18 @@ export async function handleSlackCommand(
   event: SlackSlashCommandRequest
 ) {
   if (event.command === MAIN_COMMAND) {
-    await handleMainCommand(h3Event, event)
+    return await handleMainCommand(h3Event, event)
   }
+  return 'Command not found, please try again later!'
 }
 
 const commands = {
+  auth: authCommand,
+}
+
+const syncCommands = {
   global: globalCommand,
   g: globalCommand,
-  auth: authCommand,
   armory: armoryCommand,
   a: armoryCommand,
 }
@@ -28,13 +32,22 @@ async function handleMainCommand(
   const [cmd, ...args] = text.split(' ')
 
   if (!cmd || cmd === 'info' || cmd === 'i') {
-    await respond(event.response_url, { text: INFO_TEXT })
+    return INFO_TEXT
   } else if (cmd === 'help' || cmd === 'h') {
-    await respond(event.response_url, { text: HELP_TEXT })
+    return HELP_TEXT
+  } else if (cmd in syncCommands) {
+    return await syncCommands[cmd as keyof typeof syncCommands](
+      h3Event,
+      args,
+      event
+    )
   } else if (cmd in commands) {
-    await commands[cmd as keyof typeof commands](h3Event, args, event)
+    h3Event.context.cloudflare.context.waitUntil(
+      commands[cmd as keyof typeof commands](h3Event, args, event)
+    )
+    return ''
   } else {
-    await respond(event.response_url, { text: UNKNOWN_TEXT })
+    return UNKNOWN_TEXT
   }
 }
 
@@ -52,10 +65,16 @@ async function globalCommand(
   args: string[],
   event: SlackSlashCommandRequest
 ) {
-  await respond(event.response_url, {
-    text: ':discord_loader: Fetching all projects to calculate hours...',
-  })
-
+  h3Event.context.cloudflare.context.waitUntil(
+    globalCommandInner(h3Event, args, event)
+  )
+  return ':discord_loader: Fetching all projects to calculate hours...'
+}
+async function globalCommandInner(
+  h3Event: H3Event,
+  args: string[],
+  event: SlackSlashCommandRequest
+) {
   const { projects } = await $fetch<{ projects: APIProject[] }>(
     'https://siege.hackclub.com/api/public-beta/projects'
   )
@@ -139,9 +158,20 @@ async function armoryCommand(
 ) {
   const user = await getUser(h3Event, event.user_id)
   if (!user?.siege_session) {
-    await respond(event.response_url, { text: NOT_LOGGED_IN_TEXT })
-    return
+    return NOT_LOGGED_IN_TEXT
   }
+  h3Event.context.cloudflare.context.waitUntil(
+    armoryCommandInner(h3Event, args, event, user)
+  )
+  return ':discord_loader: Fetching your projects from the armory, please wait...'
+}
+
+async function armoryCommandInner(
+  h3Event: H3Event,
+  args: string[],
+  event: SlackSlashCommandRequest,
+  user: DBUser
+) {
   const projects = (await $fetch(`/api/users/me/projects`, {
     headers: {
       Cookie: `_siege_session=${user.siege_session}`,

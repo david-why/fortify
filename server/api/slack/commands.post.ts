@@ -13,8 +13,5 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  event.context.cloudflare.context.waitUntil(handleSlackCommand(event, body))
-
-  setResponseStatus(event, 200)
-  return ''
+  return (await handleSlackCommand(event, body)) || ''
 })
