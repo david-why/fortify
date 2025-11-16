@@ -13,11 +13,16 @@ export async function handleSlackCommand(
   return 'Command not found, please try again later!'
 }
 
-const commands = {
-  auth: authCommand,
-}
+type CommandCallback = (
+  h3Event: H3Event,
+  args: string[],
+  event: SlackSlashCommandRequest
+) => Promise<any>
 
-const syncCommands = {
+const commands: Record<string, CommandCallback> = {}
+
+const syncCommands: Record<string, CommandCallback> = {
+  auth: authCommand,
   global: globalCommand,
   g: globalCommand,
   armory: armoryCommand,
@@ -117,37 +122,24 @@ async function authCommand(
 
   if (args[0] === 'logout') {
     if (!user.siege_session) {
-      await respond(event.response_url, {
-        text: `What do you mean "logout"? You've never logged in!!`,
-      })
-      return
+      return `What do you mean "logout"? You've never logged in!!`
     }
     user.siege_session = null
     await upsertUser(h3Event, user)
-    await respond(event.response_url, {
-      text: `You have been logged out, and your cookie is forever deleted from the server.`,
-    })
-    return
+    return `You have been logged out, and your cookie is forever deleted from the server.`
   }
 
   if (args[0]) {
     const cookie = args[0]
     user.siege_session = cookie
     await upsertUser(h3Event, user)
-    await respond(event.response_url, {
-      text: `You are now logged in! Your cookie has been stored on the server. If you want to log out and permanently delete the cookie, run \`${MAIN_COMMAND} auth logout\`.`,
-    })
-    return
+    return `You are now logged in! Your cookie has been stored on the server. If you want to log out and permanently delete the cookie, run \`${MAIN_COMMAND} auth logout\`.`
   }
 
   if (!user?.siege_session) {
-    await respond(event.response_url, {
-      text: `You are not logged in. Please run \`${MAIN_COMMAND} auth <_siege_session>\` with your _siege_session cookie value to login.`,
-    })
+    return NOT_LOGGED_IN_TEXT
   } else {
-    await respond(event.response_url, {
-      text: `You are logged in. If you want to log out, please run \`${MAIN_COMMAND} auth logout\`.`,
-    })
+    return `You are logged in. If you want to log out, please run \`${MAIN_COMMAND} auth logout\`.`
   }
 }
 
