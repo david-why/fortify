@@ -62,6 +62,30 @@ export default defineEventHandler(async (event) => {
     return { projects, canCreate }
   } else {
     // fetch from api
+    const data = await fetch(
+      `https://siege.hackclub.com/api/public-beta/user/${userID}`
+    ).then((r) => r.json<APIUser>())
+
+    const projects = data.projects
+    const apiProjects = await Promise.all(
+      projects.map((p) => fetchAPIProject(p.id))
+    )
+
+    const userProjects: UserProject[] = apiProjects.map((p) => ({
+      id: p.id,
+      title: p.name,
+      week: parseInt(p.week_badge_text.split(' ')[1]),
+      description: p.description,
+      repo: p.repo_url || null,
+      demo: p.demo_url || null,
+      status: p.status,
+      value: Number(p.coin_value),
+    }))
+
+    const week = getCurrentWeek()
+    const canCreate = !userProjects.find((p) => p.week === week)
+
+    return { projects: userProjects, canCreate }
   }
 })
 

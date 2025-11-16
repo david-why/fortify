@@ -15,4 +15,9 @@ export default defineNuxtConfig({
       allowedHosts: true,
     },
   },
+  routeRules: {
+    '/api/**': {
+      cors: true,
+    },
+  },
 })
