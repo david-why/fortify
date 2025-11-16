@@ -3,13 +3,22 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 import { loginSchema, type LoginSchema } from '~~/shared/schemas'
 
 const router = useRouter()
+const toast = useToast()
 
 const state = reactive({
   cookie: '',
 })
 
 async function onSubmit(event: FormSubmitEvent<LoginSchema>) {
-  await $fetch('/api/login', { method: 'POST', body: event.data })
+  try {
+    await $fetch('/api/login', { method: 'POST', body: event.data })
+  } catch (e) {
+    toast.add({
+      color: 'error',
+      title: 'Failed to log in',
+      description: 'Please check your cookie and try again',
+    })
+  }
   router.push('/armory')
 }
 </script>
