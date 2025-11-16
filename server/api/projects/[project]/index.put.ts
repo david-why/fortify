@@ -1,4 +1,4 @@
-import { getCsrfTokens } from '~~/server/utils/csrf'
+import { getCsrfTokens } from '~~/server/utils/siege'
 import { editProjectSchema } from '~~/shared/schemas'
 
 export default defineEventHandler(async (event) => {

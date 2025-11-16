@@ -130,10 +130,14 @@ async function authCommand(
   }
 
   if (args[0]) {
+    if (user.siege_session) {
+      return `You've already logged in! If you wish to change cookies for whatever reason, please log out first with \`${MAIN_COMMAND} auth logout\`.`
+    }
     const cookie = args[0]
-    user.siege_session = cookie
-    await upsertUser(h3Event, user)
-    return `You are now logged in! Your cookie has been stored on the server. If you want to log out and permanently delete the cookie, run \`${MAIN_COMMAND} auth logout\`.`
+    h3Event.context.cloudflare.context.waitUntil(
+      authCommandLogin(h3Event, event, user, cookie)
+    )
+    return ':discord_loader: Validating your cookie with Siege...'
   }
 
   if (!user?.siege_session) {
@@ -141,6 +145,26 @@ async function authCommand(
   } else {
     return `You are logged in. If you want to log out, please run \`${MAIN_COMMAND} auth logout\`.`
   }
+}
+
+async function authCommandLogin(
+  h3Event: H3Event,
+  event: SlackSlashCommandRequest,
+  user: DBUser,
+  cookie: string
+) {
+  const isValid = await validateCookie(cookie)
+  if (!isValid) {
+    await respond(event.response_url, {
+      text: `The cookie you provided (\`${cookie}\`) is invalid. Please make sure it is correct, and then try again.`,
+    })
+    return
+  }
+  user.siege_session = cookie
+  await upsertUser(h3Event, user)
+  await respond(event.response_url, {
+    text: `You are now logged in! Your cookie has been stored on the server. If you want to log out and permanently delete the cookie, run \`${MAIN_COMMAND} auth logout\`.`,
+  })
 }
 
 async function armoryCommand(
@@ -155,7 +179,7 @@ async function armoryCommand(
   h3Event.context.cloudflare.context.waitUntil(
     armoryCommandInner(h3Event, args, event, user)
   )
-  return ':discord_loader: Fetching your projects from the armory, please wait...'
+  return ':discord_loader: Fetching your projects from the armory...'
 }
 
 async function armoryCommandInner(

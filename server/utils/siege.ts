@@ -1,3 +1,5 @@
+// helper functions for common operations with the Siege API
+
 import { load } from 'cheerio'
 import type { H3Event } from 'h3'
 
@@ -21,4 +23,14 @@ export async function getCsrfTokens(event: H3Event, url: string) {
   }
 
   return { csrfToken, authenticityToken }
+}
+
+export async function validateCookie(cookie: string) {
+  const res = await fetch('https://siege.hackclub.com/castle', {
+    headers: {
+      Cookie: `_siege_session=${cookie}`,
+    },
+    redirect: 'manual',
+  })
+  return res.status === 200
 }
