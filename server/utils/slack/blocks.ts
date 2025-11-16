@@ -1,5 +1,7 @@
 // generate blocks to send as messages
 
+import { canEditProject } from '~~/shared/validation'
+
 import type { ActionsBlockElement, KnownBlock } from '@slack/types'
 import { markdownToSlack } from 'md-to-slack'
 
@@ -99,9 +101,24 @@ export async function generateProjectBlocks(
     },
   })
 
-  const actionsBlocks: KnownBlock[] = extraActions.length
-    ? [{ type: 'actions', elements: extraActions }]
+  const specialActions: ActionsBlockElement[] = canEditProject(project)
+    ? [
+        {
+          type: 'button',
+          text: {
+            type: 'plain_text',
+            text: ':pencil: Edit project',
+          },
+          value: String(project.id),
+          action_id: 'armory-details-edit',
+        },
+      ]
     : []
+
+  const actionsBlocks: KnownBlock[] =
+    extraActions.length || specialActions.length
+      ? [{ type: 'actions', elements: [...specialActions, ...extraActions] }]
+      : []
 
   return [
     {
@@ -167,4 +184,160 @@ export async function generateProjectBlocks(
     },
     ...actionsBlocks,
   ] satisfies KnownBlock[]
+}
+
+export async function generateProjectEditBlocks(
+  cookie: string,
+  projectID: number,
+  extraActions: ActionsBlockElement[] = []
+): Promise<KnownBlock[]> {
+  const [project, hackatimeProjects] = await Promise.all([
+    $fetch(`/api/projects/${projectID}`, {
+      headers: {
+        Cookie: `_siege_session=${cookie}`,
+      },
+    }),
+    $fetch(`/api/projects/${projectID}/hackatime-projects`, {
+      headers: {
+        Cookie: `_siege_session=${cookie}`,
+      },
+    }),
+  ])
+
+  const hackatimeOptions = hackatimeProjects.map((p) => ({
+    text: {
+      type: 'plain_text' as const,
+      text: `${p.label} - ${p.description}`,
+    },
+    value: p.value,
+  }))
+  const initialOptions = hackatimeOptions.filter((o) =>
+    project.hackatime_projects.includes(o.value)
+  )
+
+  return [
+    {
+      type: 'header',
+      text: {
+        type: 'plain_text',
+        text: ':pencil: Edit your project',
+        emoji: true,
+      },
+    },
+    {
+      type: 'input',
+      block_id: 'title',
+      element: {
+        type: 'plain_text_input',
+        initial_value: project.title,
+        action_id: 'value',
+      },
+      label: {
+        type: 'plain_text',
+        text: 'Project name',
+      },
+      optional: false,
+    },
+    {
+      type: 'input',
+      block_id: 'description',
+      element: {
+        type: 'plain_text_input',
+        multiline: true,
+        initial_value: project.description,
+        action_id: 'value',
+      },
+      label: {
+        type: 'plain_text',
+        text: 'Description (markdown allowed)',
+      },
+      optional: false,
+    },
+    {
+      type: 'input',
+      block_id: 'repo',
+      element: {
+        type: 'url_text_input',
+        initial_value: project.repo || undefined,
+        placeholder: {
+          type: 'plain_text',
+          text: 'Enter a GitHub, Hack Club Git, etc. URL',
+        },
+        action_id: 'value',
+      },
+      label: {
+        type: 'plain_text',
+        text: 'Repository URL (optional)',
+      },
+    },
+    {
+      type: 'input',
+      block_id: 'demo',
+      element: {
+        type: 'url_text_input',
+        initial_value: project.demo || undefined,
+        placeholder: {
+          type: 'plain_text',
+          text: 'Enter your demo URL',
+        },
+        action_id: 'value',
+      },
+      label: {
+        type: 'plain_text',
+        text: 'Demo URL (optional)',
+      },
+    },
+    {
+      type: 'input',
+      block_id: 'hackatime_projects',
+      element: {
+        type: 'multi_static_select',
+        placeholder: {
+          type: 'plain_text',
+          text: 'Select your hackatime projects',
+        },
+        initial_options: initialOptions,
+        options: hackatimeOptions,
+        action_id: 'value',
+      },
+      label: {
+        type: 'plain_text',
+        text: 'Hackatime projects (optional but recommended)',
+      },
+    },
+    {
+      type: 'context',
+      elements: [
+        {
+          type: 'mrkdwn',
+          text: '_Editing the screenshot is not supported yet, sorry!_',
+        },
+      ],
+    },
+    {
+      type: 'actions',
+      elements: [
+        {
+          type: 'button',
+          text: {
+            type: 'plain_text',
+            text: 'Edit',
+          },
+          value: String(project.id),
+          action_id: 'armory-edit-confirm',
+          style: 'primary',
+        },
+        {
+          type: 'button',
+          text: {
+            type: 'plain_text',
+            text: 'Cancel',
+          },
+          value: String(project.id),
+          action_id: 'armory-edit-cancel',
+        },
+        ...extraActions,
+      ],
+    },
+  ]
 }
