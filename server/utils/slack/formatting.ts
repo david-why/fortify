@@ -16,3 +16,9 @@ export function formatProjectStatusSlack(
     return 'Unknown'
   }
 }
+
+export function getDomainName(url: string) {
+  const hostname = new URL(url).hostname
+  const parts = hostname.split('.')
+  return parts.slice(parts.length - 2).join('.')
+}

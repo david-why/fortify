@@ -12,6 +12,7 @@ export function convertAPIProjectToProject(
     status: project.status,
     value: parseFloat(project.coin_value),
     hours: project.hours,
+    user: project.user,
     // is_self: scrapeData.is_self,
     // hackatime_projects: scrapeData.hackatime_projects,
   }

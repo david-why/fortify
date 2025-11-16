@@ -72,14 +72,14 @@ async function armoryCommandInner(
                 text: ':heavy_plus_sign: Create project',
                 emoji: true,
               },
-              action_id: 'create-project',
+              action_id: 'armory-create',
             },
           ],
         },
       ]
     : []
 
-  await respondSlashCommand(event, {
+  await respondSlackEvent(event, {
     blocks: [
       {
         type: 'header',

@@ -37,7 +37,7 @@ async function globalCommandInner(
     weekProjects.filter((p) => p.status !== 'building')
   )
 
-  await respondSlashCommand(event, {
+  await respondSlackEvent(event, {
     text: `\
 :clock3: Total hours tracked this week: ${weekHours}
 :clock6: Total submitted hours this week: ${submittedHours}

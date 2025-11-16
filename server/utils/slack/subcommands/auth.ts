@@ -44,14 +44,14 @@ async function authCommandLogin(
 ) {
   const isValid = await validateCookie(cookie)
   if (!isValid) {
-    await respondSlashCommand(event, {
+    await respondSlackEvent(event, {
       text: `The cookie you provided (\`${cookie}\`) is invalid. Please make sure it is correct, and then try again.`,
     })
     return
   }
   user.siege_session = cookie
   await upsertUser(h3Event, user)
-  await respondSlashCommand(event, {
+  await respondSlackEvent(event, {
     text: `You are now logged in! Your cookie has been stored on the server. If you want to log out and permanently delete the cookie, run \`${SLACK_MAIN_COMMAND} auth logout\`.`,
   })
 }

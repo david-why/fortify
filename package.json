@@ -20,6 +20,7 @@
     "cheerio": "^1.1.2",
     "eslint": "^9.0.0",
     "luxon": "^3.7.2",
+    "md-to-slack": "^1.0.0",
     "nitro-cloudflare-dev": "^0.2.2",
     "nuxt": "^4.2.0",
     "vue": "^3.5.22",

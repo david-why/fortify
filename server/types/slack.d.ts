@@ -41,3 +41,5 @@ interface SlackSlashCommandRequest {
   trigger_id: string
   api_app_id: string
 }
+
+// interactions

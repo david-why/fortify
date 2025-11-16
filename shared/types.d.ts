@@ -125,6 +125,7 @@ declare interface Project {
   hours: number
   is_self: boolean
   hackatime_projects: string[]
+  user: Pick<APIUser, 'id' | 'name' | 'display_name'>
 }
 
 declare type UserProject = Omit<
