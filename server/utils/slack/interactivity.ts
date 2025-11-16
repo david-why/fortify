@@ -49,14 +49,18 @@ async function armoryProjectDetails(event: H3Event, payload: BlockAction) {
     return respondNeedLogin(payload)
   }
 
-  const project = await $fetch(`/api/projects/${projectID}`, {
-    headers: {
-      Cookie: `_siege_session=${cookie}`,
-    },
-  })
+  const [project] = await Promise.all([
+    $fetch(`/api/projects/${projectID}`, {
+      headers: {
+        Cookie: `_siege_session=${cookie}`,
+      },
+    }),
+    respondSlackEvent(payload, {
+      text: ':discord_loader: Retrieving your project...',
+    }),
+  ])
 
   await respondSlackEvent(payload, {
-    replace_original: false,
     blocks: [
       {
         type: 'header',
@@ -76,6 +80,10 @@ async function armoryProjectDetails(event: H3Event, payload: BlockAction) {
           {
             type: 'plain_text',
             text: `Week ${project.week}`,
+          },
+          {
+            type: 'plain_text',
+            text: `${project.hours} hours`,
           },
         ],
       },
@@ -116,11 +124,12 @@ async function armoryProjectDetails(event: H3Event, payload: BlockAction) {
         ],
       },
       {
-        type: 'context',
+        type: 'actions',
         elements: [
           {
-            type: 'plain_text',
-            text: `Time spent: ${project.hours} hours`,
+            type: 'button',
+            text: { type: 'plain_text', text: ':arrow_backward: Back' },
+            action_id: 'armory-details-back',
           },
         ],
       },
