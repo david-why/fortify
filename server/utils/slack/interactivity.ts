@@ -22,6 +22,8 @@ export async function handleSlackBlockAction(
       text: 'No demo URL set for this project!',
       replace_original: false,
     })
+  } else if (action.action_id === 'armory-details-back') {
+    await armoryDetailsBack(event, payload)
   } else if (action.action_id === 'armory-create') {
     await respondSlackEvent(payload, {
       text: 'WIP, please check back later!',
@@ -55,12 +57,31 @@ async function armoryProjectDetails(event: H3Event, payload: BlockAction) {
       },
     ]),
     respondSlackEvent(payload, {
-      text: ':discord_loader: Retrieving your project...',
+      text: ':discord_loader: Fetching your project...',
     }),
   ])
 
   await respondSlackEvent(payload, {
     text: 'Here is your project!',
+    blocks,
+  })
+}
+
+async function armoryDetailsBack(event: H3Event, payload: BlockAction) {
+  const cookie = await getSlackCookie(event, payload.user.id)
+  if (!cookie) {
+    return respondNeedLogin(payload)
+  }
+
+  const [blocks] = await Promise.all([
+    generateArmoryBlocks(cookie),
+    respondSlackEvent(payload, {
+      text: ':discord_loader: Fetching your projects from the armory...',
+    }),
+  ])
+
+  await respondSlackEvent(payload, {
+    text: 'Here is a list of your Siege projects!',
     blocks,
   })
 }
