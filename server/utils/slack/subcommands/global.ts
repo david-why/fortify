@@ -27,6 +27,14 @@ async function globalCommandInner(
     projects.filter((p) => p.status !== 'building')
   )
 
+  const lastWeekProjects = projects.filter(
+    (p) => p.week_badge_text === `Week ${week - 1}`
+  )
+  const lastHours = sumHours(lastWeekProjects)
+  const lastSubmittedHours = sumHours(
+    lastWeekProjects.filter((p) => p.status !== 'building')
+  )
+
   const weekProjects = projects.filter(
     (p) => p.week_badge_text === `Week ${week}`
   )
@@ -37,9 +45,11 @@ async function globalCommandInner(
 
   await respondSlackEvent(event, {
     text: `\
-:clock3: Total hours tracked this week: ${weekHours}
-:clock6: Total submitted hours this week: ${submittedHours}
+:clock1: Total hours tracked this week: ${weekHours}
+:clock3: Total submitted hours this week: ${submittedHours}
+:clock5: Total hours tracked last week: ${lastHours}
+:clock7: Total submitted hours last week: ${lastSubmittedHours}
 :clock9: Total hours tracked across all weeks: ${totalHours}
-:clock12: Total submitted hours across all weeks: ${totalSubmittedHours}`,
+:clock11: Total submitted hours across all weeks: ${totalSubmittedHours}`,
   })
 }
