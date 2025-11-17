@@ -12,7 +12,8 @@ export const SLACK_HELP_TEXT = `\
 :siege-castle: All subcommands:
 
 No auth required:
-- \`global\`, \`g\`: Retrieves the total time tracked and submitted, this week and across all weeks.
+- \`global\`, \`g\`: Calculates the total time tracked and submitted, this week and across all weeks.
+- \`project <project_id>\`, \`p <project_id>\`: Fetches a given project by its ID.
 - \`auth\`: Logs in or out with your _siege_session token.
 - \`info\`, \`i\`: Show the info text.
 - \`help\`, \`h\`: Show this help text.
