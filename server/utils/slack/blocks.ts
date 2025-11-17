@@ -215,6 +215,37 @@ export async function generateProjectEditBlocks(
     project.hackatime_projects.includes(o.value)
   )
 
+  const hackatimeBlocks: KnownBlock[] = hackatimeOptions.length
+    ? [
+        {
+          type: 'input',
+          block_id: 'hackatime_projects',
+          element: {
+            type: 'multi_static_select',
+            placeholder: {
+              type: 'plain_text',
+              text: 'Select your hackatime projects',
+            },
+            initial_options: initialOptions.length ? initialOptions : undefined,
+            options: hackatimeOptions,
+            action_id: 'value',
+          },
+          label: {
+            type: 'plain_text',
+            text: 'Hackatime projects (optional but recommended)',
+          },
+        },
+      ]
+    : [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: "*Hackatime projects (optional but recommended)*\n\n_You don't have any Hackatime projects this week yet. They'll appear after you track some time._",
+          },
+        },
+      ]
+
   return [
     {
       type: 'header',
@@ -257,7 +288,7 @@ export async function generateProjectEditBlocks(
       type: 'input',
       block_id: 'repo',
       element: {
-        type: 'url_text_input',
+        type: 'plain_text_input',
         initial_value: project.repo || undefined,
         placeholder: {
           type: 'plain_text',
@@ -274,7 +305,7 @@ export async function generateProjectEditBlocks(
       type: 'input',
       block_id: 'demo',
       element: {
-        type: 'url_text_input',
+        type: 'plain_text_input',
         initial_value: project.demo || undefined,
         placeholder: {
           type: 'plain_text',
@@ -287,24 +318,7 @@ export async function generateProjectEditBlocks(
         text: 'Demo URL (optional)',
       },
     },
-    {
-      type: 'input',
-      block_id: 'hackatime_projects',
-      element: {
-        type: 'multi_static_select',
-        placeholder: {
-          type: 'plain_text',
-          text: 'Select your hackatime projects',
-        },
-        initial_options: initialOptions,
-        options: hackatimeOptions,
-        action_id: 'value',
-      },
-      label: {
-        type: 'plain_text',
-        text: 'Hackatime projects (optional but recommended)',
-      },
-    },
+    ...hackatimeBlocks,
     {
       type: 'context',
       elements: [

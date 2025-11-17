@@ -38,7 +38,10 @@ export async function handleSlackBlockAction(
       text: 'WIP, please check back later!',
       replace_original: false,
     })
-  } else if (action.action_id.startsWith('ignore')) {
+  } else if (
+    action.action_id.startsWith('ignore') ||
+    action.action_id === 'value'
+  ) {
     // ignore :)
   } else {
     console.warn('Unknown interaction')
