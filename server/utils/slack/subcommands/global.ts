@@ -5,9 +5,7 @@ export async function globalCommand(
   args: string[],
   event: SlackSlashCommandRequest
 ) {
-  h3Event.context.cloudflare.context.waitUntil(
-    globalCommandInner(h3Event, args, event)
-  )
+  h3Event.waitUntil(globalCommandInner(h3Event, args, event))
   return ':discord_loader: Fetching all projects to calculate hours...'
 }
 async function globalCommandInner(

@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     setResponseHeader(event, 'content-type', 'text/plain')
     return body.challenge
   } else {
-    event.context.cloudflare.context.waitUntil(handleSlackEvent(event, body))
+    event.waitUntil(handleSlackEvent(event, body))
     setResponseStatus(event, 200)
     return ''
   }

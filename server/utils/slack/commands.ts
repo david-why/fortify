@@ -60,7 +60,7 @@ async function handleMainCommand(
       event
     )
   } else if (cmd in commands) {
-    h3Event.context.cloudflare.context.waitUntil(
+    h3Event.waitUntil(
       commands[cmd as keyof typeof commands](h3Event, args, event)
     )
     return ''

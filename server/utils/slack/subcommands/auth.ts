@@ -23,9 +23,7 @@ export async function authCommand(
       return `You've already logged in! If you wish to change cookies for whatever reason, please log out first with \`${SLACK_MAIN_COMMAND} auth logout\`.`
     }
     const cookie = args[0]
-    h3Event.context.cloudflare.context.waitUntil(
-      authCommandLogin(h3Event, event, user, cookie)
-    )
+    h3Event.waitUntil(authCommandLogin(h3Event, event, user, cookie))
     return ':discord_loader: Validating your cookie with Siege...'
   }
 

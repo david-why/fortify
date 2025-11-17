@@ -9,9 +9,7 @@ export async function armoryCommand(
   if (!user?.siege_session) {
     return SLACK_NOT_LOGGED_IN_TEXT
   }
-  h3Event.context.cloudflare.context.waitUntil(
-    armoryCommandInner(h3Event, args, event, user)
-  )
+  h3Event.waitUntil(armoryCommandInner(h3Event, args, event, user))
   return ':discord_loader: Fetching your projects from the armory...'
 }
 

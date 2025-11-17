@@ -14,9 +14,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (payload.type === 'block_actions') {
-    event.context.cloudflare.context.waitUntil(
-      handleSlackBlockAction(event, payload)
-    )
+    event.waitUntil(handleSlackBlockAction(event, payload))
   }
 
   return ''
