@@ -27,3 +27,5 @@ export const SLACK_UNKNOWN_TEXT = `Command not found... :( Try \`${SLACK_MAIN_CO
 export const SLACK_NOT_LOGGED_IN_TEXT = `\
 You are not logged in! Please use \`${SLACK_MAIN_COMMAND} auth <_siege_session>\` to log in with your _siege_session cookie, which you can obtain from your browser's developer tools under the "Storage" (or similar) tab.
 *NOTE*: Using this command will store your cookie in the database, which in theory allows me to access sensitive information about you, including your physical address, and to perform arbitrary actions on the Siege website. I solemnly swear that I will never do that; however, please consider if you trust me or not before continuing. (You should :3)`
+
+export const SLACK_ERROR_TEXT = 'There was an internal error. Please try again later.'

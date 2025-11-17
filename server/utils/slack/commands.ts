@@ -6,6 +6,14 @@ const rootCommands = {
   '/fortify-auth': authCommand,
   '/fortify-help': helpCommand,
   '/fortify-info': infoCommand,
+  '/fortify-project': projectCommand,
+
+  '/dev-fortify-armory': armoryCommand,
+  '/dev-fortify-global': globalCommand,
+  '/dev-fortify-auth': authCommand,
+  '/dev-fortify-help': helpCommand,
+  '/dev-fortify-info': infoCommand,
+  '/dev-fortify-project': projectCommand,
 }
 
 export async function handleSlackCommand(

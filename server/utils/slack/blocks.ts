@@ -91,13 +91,13 @@ export async function generateArmoryBlocks(
 }
 
 export async function generateProjectBlocks(
-  cookie: string,
+  cookie: string | null,
   projectID: number,
   extraActions: ActionsBlockElement[] = []
 ) {
   const project = await $fetch(`/api/projects/${projectID}`, {
     headers: {
-      Cookie: `_siege_session=${cookie}`,
+      Cookie: cookie ? `_siege_session=${cookie}` : '',
     },
   })
 
