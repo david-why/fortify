@@ -4,6 +4,8 @@ const rootCommands = {
   '/fortify-armory': armoryCommand,
   '/fortify-global': globalCommand,
   '/fortify-auth': authCommand,
+  '/fortify-help': helpCommand,
+  '/fortify-info': infoCommand,
 }
 
 export async function handleSlackCommand(
@@ -36,6 +38,10 @@ const syncCommands: Record<string, CommandCallback> = {
   g: globalCommand,
   armory: armoryCommand,
   a: armoryCommand,
+  help: helpCommand,
+  h: helpCommand,
+  info: infoCommand,
+  i: infoCommand,
 }
 
 async function handleMainCommand(
@@ -45,10 +51,8 @@ async function handleMainCommand(
   const { text } = event
   const [cmd, ...args] = text.split(' ')
 
-  if (!cmd || cmd === 'info' || cmd === 'i') {
+  if (!cmd) {
     return SLACK_INFO_TEXT
-  } else if (cmd === 'help' || cmd === 'h') {
-    return SLACK_HELP_TEXT
   } else if (cmd in syncCommands) {
     return await syncCommands[cmd as keyof typeof syncCommands](
       h3Event,
@@ -63,4 +67,12 @@ async function handleMainCommand(
   } else {
     return SLACK_UNKNOWN_TEXT
   }
+}
+
+async function helpCommand() {
+  return SLACK_HELP_TEXT
+}
+
+async function infoCommand() {
+  return SLACK_INFO_TEXT
 }

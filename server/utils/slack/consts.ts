@@ -17,8 +17,10 @@ No auth required:
 - \`info\`, \`i\`: Show the info text.
 - \`help\`, \`h\`: Show this help text.
 
-Authentication (with \`${SLACK_MAIN_COMMAND} auth\`) required:
-- \`armory\`, \`a\`: Views your projects.`
+Authentication required:
+- \`armory\`, \`a\`: Views your projects.
+
+You can also prefix most commands with \`/fortify-\` (such as \`/fortify-global\`) to use them as slash commands directly.`
 
 export const SLACK_UNKNOWN_TEXT = `Command not found... :( Try \`${SLACK_MAIN_COMMAND} help\` for a list of subcommands!`
 
