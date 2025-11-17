@@ -1,11 +1,23 @@
 import type { H3Event } from 'h3'
 
+const rootCommands = {
+  '/fortify-armory': armoryCommand,
+  '/fortify-global': globalCommand,
+  '/fortify-auth': authCommand,
+}
+
 export async function handleSlackCommand(
   h3Event: H3Event,
   event: SlackSlashCommandRequest
 ) {
   if (event.command === SLACK_MAIN_COMMAND) {
     return await handleMainCommand(h3Event, event)
+  } else if (event.command in rootCommands) {
+    return await rootCommands[event.command as keyof typeof rootCommands](
+      h3Event,
+      event.text.split(' '),
+      event
+    )
   }
   return 'Command not found, please try again later!'
 }
