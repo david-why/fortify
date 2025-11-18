@@ -11,9 +11,9 @@ Here are some versions of this website, in case you want to see what it looked l
   - Settings page
   - Market page (device upgrades & other stuff)
   - Armory explore page, with a **_GRID_** view!
-- Siege Week 11 submission (TBD): demo video | [link to first commit this week](https://github.com/david-why/fortify/commit/1d5fdacfc43fb70d784f523921e7e00f6ec7f19a) | link to this version | features added:
+- Siege Week 11 submission (2025-11-18): [demo video](https://hc-cdn.hel1.your-objectstorage.com/s/v3/111e626d71e27742a2909df043ae31eff6f722ef_fortify3.mp4) | [link to first commit this week](https://github.com/david-why/fortify/commit/1d5fdacfc43fb70d784f523921e7e00f6ec7f19a) | [link to this version](https://c97f6c66.fortify-4k6.pages.dev) | features added:
   - WIP [API docs](./siege_api_schema.yml) for Siege's internal APIs. [Browse here](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/david-why/fortify/refs/heads/main/siege_api_schema.yml)
-  - Stonemason review page
+  - Stonemason review page (if you're a stonemason, enable access from the Settings tab)
   - My Space page, analogous to the Siege Keep page
   - The @Fortify bot, which lets you view and edit Siege projects right from Slack! Try the `/siege-fortify` command from any channel!
 - Latest version: [link](https://fortify.davidwhy.me)
