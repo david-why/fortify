@@ -9,7 +9,10 @@ export default defineEventHandler(async (event) => {
     // fetch from armory
     const htmlText = await fetchArmoryProjects(event)
 
-    const armoryProjects: Omit<UserProject, 'description'>[] = []
+    const armoryProjects: Omit<
+      UserProject,
+      'description' | 'user' | 'hours'
+    >[] = []
 
     const $ = load(htmlText)
     for (const project of $('.projects-grid').find('article')) {
@@ -55,6 +58,8 @@ export default defineEventHandler(async (event) => {
     const projects: UserProject[] = armoryProjects.map((p, i) => ({
       ...p,
       description: apiProjects[i]!.description,
+      user: apiProjects[i]!.user,
+      hours: apiProjects[i]!.hours,
     }))
 
     const canCreate = !$('.projects-actions a').hasClass('is-disabled')
@@ -80,6 +85,8 @@ export default defineEventHandler(async (event) => {
       demo: p.demo_url || null,
       status: p.status,
       value: Number(p.coin_value),
+      user: p.user,
+      hours: p.hours,
     }))
 
     const week = getCurrentWeek()

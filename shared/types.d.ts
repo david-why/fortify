@@ -130,7 +130,7 @@ declare interface Project {
 
 declare type UserProject = Omit<
   Project,
-  'screenshot' | 'hours' | 'is_self' | 'hackatime_projects'
+  'screenshot' | 'is_self' | 'hackatime_projects'
 >
 
 declare type StonemasonProjectItem = Omit<UserProject, 'value' | 'status'> & {
